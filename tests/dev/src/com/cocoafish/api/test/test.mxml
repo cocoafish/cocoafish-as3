@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.serialization.json.JSON;
+			import com.cocoafish.api.Cocoafish;
+			import mx.controls.Alert;
+			import mx.controls.ProgressBar;
+			import mx.managers.PopUpManager;
+			import mx.containers.TitleWindow;
+			
+			private var photo:FileReference;
+			private var isPhotoLoaded:Boolean = false;
+			var waitingpopup:TitleWindow;
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				var sdk:Cocoafish = new Cocoafish(appKeyTextField.text);
+				var data:Object = new Object();
+				data.email = emailTextField.text;
+				data.first_name = firstNameTextField.text;
+				data.last_name = lastNameTextField.text;
+				data.password = passwdTextField.text;
+				data.password_confirmation = passwdConfirmTextField.text;
+				data.photo = photo;
+				sdk.sendRequest("users/create.json", URLRequestMethod.POST, data, false, function(data:Object):void {
+					hideLoading();
+					var result:String = JSON.encode(data);
+					trace(result);
+					Alert.show(result);
+				});
+				showLoading();
+			}
+			
+			protected function selectPhoto(event:MouseEvent):void {
+				photo= new FileReference();
+				photo.addEventListener(Event.SELECT, photoSelected);
+				photo.browse();
+			}
+			
+			protected function photoSelected(event:Event):void {
+				photoTextField.text = photo.name;
+				photo.removeEventListener(Event.SELECT, photoSelected);
+				photo.addEventListener(Event.COMPLETE, photoLoaded);
+				photo.load();
+			}
+			
+			protected function photoLoaded(event:Event):void {
+				photo.removeEventListener(Event.COMPLETE, photoLoaded);
+				isPhotoLoaded = true;
+				updateForm();
+			}
+			
+			protected function photoRadio_clickHandler(event:MouseEvent):void
+			{
+				updateForm();
+			}
+			
+			protected function updateForm():void {
+				sendBtn.enabled = false;
+				if(photoRadio.selected) {
+					photoTextField.enabled = true;
+					browseButton.enabled = true;
+					if(isPhotoLoaded) {
+						sendBtn.enabled = true;
+					}
+				} else {
+					photoTextField.enabled = false;
+					browseButton.enabled = false;
+					sendBtn.enabled = true;
+				}
+			}
+			
+			protected function showLoading():void {
+				if(waitingpopup == null) {
+					waitingpopup = new TitleWindow();
+					waitingpopup.title = "Please Wait";
+					var pb:ProgressBar = new ProgressBar();
+					pb.indeterminate = true;
+					pb.label = "Loading...";
+					waitingpopup.addChild(pb);    
+				}
+				PopUpManager.addPopUp(waitingpopup, this, true);
+				PopUpManager.centerPopUp(waitingpopup);
+			}
+			
+			protected function hideLoading():void {
+				PopUpManager.removePopUp(waitingpopup);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="radiogroup1"/>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<mx:TabNavigator x="11" y="126" width="931" height="459">
+		<s:NavigatorContent width="100%" height="100%" label="Users">
+			<s:Panel x="10" y="10" width="394" height="255" title="Create User">
+				<s:Label x="10" y="10" text="First Name:"/>
+				<s:Label x="10" y="10" text="First Name:"/>
+				<s:TextInput id="firstNameTextField" x="124" y="4" width="258" text="Bill"/>
+				<s:TextInput id="lastNameTextField" x="124" y="34" width="258" text="Wang"/>
+				<s:TextInput id="emailTextField" x="124" y="64" width="258" text="bill@cocoafish.com"/>
+				<s:TextInput id="passwdTextField" x="124" y="94" width="258" displayAsPassword="true"/>
+				<s:TextInput id="passwdConfirmTextField" x="124" y="124" width="258" displayAsPassword="true"/>
+				<s:Label x="10" y="71" height="15" text="Email:"/>
+				<s:Label x="10" y="40" text="Last Name:"/>
+				<s:Label x="10" y="98" height="18" text="Password:"/>
+				<s:Label x="10" y="129" text="Password Confirm:"/>
+				<s:CheckBox id="photoRadio" x="10" y="154" label="Photo"
+							click="photoRadio_clickHandler(event)"/>
+				<s:TextInput id="photoTextField" x="124" y="154" width="180" editable="false"
+							 enabled="false"/>
+				<s:Button id="browseButton" x="312" y="155" label="Browse..."
+						  click="selectPhoto(event)" enabled="false"/>
+				<s:Button id="sendBtn" x="297" y="189" width="85" label="Create User"
+						  click="button1_clickHandler(event)" enabled="true"/>
+			</s:Panel>
+		</s:NavigatorContent>
+	</mx:TabNavigator>
+	<s:Label x="10" y="10" fontSize="20" fontWeight="bold" text="Cocoafish Actionscript SDK Tests"/>
+	<s:VGroup x="10" y="37" width="84" height="81">
+		<s:RadioButton id="appKey" label="App. Key" groupName="radiogroup1" selected="true"/>
+		<s:RadioButton id="oauth" label="OAuth" groupName="radiogroup1" enabled="false"/>
+	</s:VGroup>
+	<s:Label x="100" y="42" text="App. Key:"/>
+	<s:TextInput id="appKeyTextField" x="179" y="37" width="434"
+				 text="fNEQf2q7T4pQIuJTT4aRvoaHFhuiVP77"/>
+	<s:TextInput x="179" y="62" width="434" enabled="false"/>
+	<s:TextInput x="179" y="87" width="434" enabled="false"/>
+	<s:Label x="99" y="93" text="OAuth Secret:"/>
+	<s:Label x="99" y="67" text="OAuth Key:"/>
+</s:Application>
