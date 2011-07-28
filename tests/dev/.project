@@ -17,9 +17,14 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>[source path] src</name>
+			<name>[source path] cocoafish-as3-src</name>
 			<type>2</type>
 			<location>/Users/apple/work/git/cocoafish-as3/src</location>
+		</link>
+		<link>
+			<name>[source path] oauth-src</name>
+			<type>2</type>
+			<location>/Users/apple/work/git/cocoafish-as3/oauth/src</location>
 		</link>
 	</linkedResources>
 </projectDescription>

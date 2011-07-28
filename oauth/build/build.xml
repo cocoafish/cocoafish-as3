@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<project name="OAuth" basedir="../" default="compile">
+
+	<!-- ============================== -->
+	<!--  Configuration -->
+	<!-- ============================== -->
+
+	<property environment="env" />
+
+	<fail unless="env.FLEX_HOME" message="FLEX_HOME needs to be defined as an environment variable or in the Ant build." />
+
+	<!-- Configuration -->
+	<property file="${basedir}/build/build.properties" />
+
+	<!-- Setup Flex Ant Resources -->
+	<!--property name="FLEX_HOME" location="${flex.sdk}" /-->
+	<property name="FLEX_HOME" location="${env.FLEX_HOME}" />
+	<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
+
+	<!--<property name="swc.name" value="${library.name}-${library.version}" />-->
+	<property name="swc.name" value="${library.name}" />
+	
+	<!-- ============================== -->
+	<!--  Clean and Init Targets -->
+	<!-- ============================== -->
+
+	<target name="clean" description="Removes artifacts from previous builds">
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="${bin.dir}" defaultexcludes="false">
+				<include name="**/*" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="init" description="Initializes project and destination folders">
+		<echo message="Project: ${ant.project.name}" />
+		<echo message="Flex SDK: ${FLEX_HOME}" />
+
+		<!-- Create direectories -->
+		<mkdir dir="${bin.dir}" />
+	</target>
+
+	<!-- ======================================= -->
+	<!-- Compile and Document -->
+	<!-- ======================================= -->
+
+	<target name="compile" depends="init" description="Compile the library ${swc.name}.swc file">
+		<compc output="${bin.dir}/${swc.name}.swc" debug="false" optimize="true">
+			<load-config filename="${FLEX_HOME}/frameworks/air-config.xml" />
+			<source-path path-element="${src.dir}" />
+			<include-sources dir="${src.dir}" includes="*" />
+			<library-path dir="${build.libs.dir}" append="true">
+				<include name="*.swc" />
+			</library-path>
+		</compc>
+	</target>
+</project>

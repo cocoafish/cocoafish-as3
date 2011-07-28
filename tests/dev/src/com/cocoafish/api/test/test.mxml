@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="100%" minWidth="955" minHeight="600" applicationComplete="updateForm()">
 	
 	<fx:Script>
 		<![CDATA[
@@ -121,6 +122,65 @@
 				updateForm();
 			}
 			
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				var sdk:Cocoafish = null;
+				if(appKey.selected) {
+					sdk = new Cocoafish(appKeyTextField.text);
+				}
+				if(oauth.selected) {
+					sdk = new Cocoafish(oauthKeyTextField.text, oauthSecretTextField.text);
+				}
+				sdk.sendRequest("places/search.json", URLRequestMethod.GET, null, false, function(data:Object):void {
+					hideLoading();
+					var result:String = JSON.encode(data);
+					trace(result);
+					Alert.show(result);
+				});
+				showLoading();
+			}
+			
+			protected function button3_clickHandler(event:MouseEvent):void
+			{
+				var sdk:Cocoafish = null;
+				if(appKey.selected) {
+					sdk = new Cocoafish(appKeyTextField.text);
+				}
+				if(oauth.selected) {
+					sdk = new Cocoafish(oauthKeyTextField.text, oauthSecretTextField.text);
+				}
+				var data:Object = new Object();
+				data.login = loginTextField.text;
+				data.password = loginPasswdTextField.text;
+				
+				sdk.sendRequest("users/login.json", URLRequestMethod.POST, data, false, function(data:Object):void {
+					hideLoading();
+					var result:String = JSON.encode(data);
+					trace(result);
+					Alert.show(result);
+				});
+				showLoading();
+			}
+			
+			protected function button4_clickHandler(event:MouseEvent):void
+			{
+				var sdk:Cocoafish = null;
+				if(appKey.selected) {
+					sdk = new Cocoafish(appKeyTextField.text);
+				}
+				if(oauth.selected) {
+					sdk = new Cocoafish(oauthKeyTextField.text, oauthSecretTextField.text);
+				}
+				
+				sdk.sendRequest("users/logout.json", URLRequestMethod.GET, null, false, function(data:Object):void {
+					hideLoading();
+					var result:String = JSON.encode(data);
+					trace(result);
+					Alert.show(result);
+				});
+				showLoading();
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -128,9 +188,10 @@
 		<s:RadioButtonGroup id="radiogroup1"/>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<mx:TabNavigator x="11" y="126" width="931" height="459">
+	<mx:TabNavigator x="11" y="126" width="726" height="459">
 		<s:NavigatorContent width="100%" height="100%" label="Users">
-			<s:Panel x="10" y="10" width="394" height="255" title="Create User">
+			<s:Panel x="10" y="10" width="394" height="255"
+					 skinClass="spark.skins.spark.PanelSkin" title="Create User">
 				<s:Label x="10" y="10" text="First Name:"/>
 				<s:Label x="10" y="10" text="First Name:"/>
 				<s:TextInput id="firstNameTextField" x="124" y="4" width="258" text="Bill"/>
@@ -151,22 +212,37 @@
 				<s:Button id="sendBtn" x="297" y="189" width="85" label="Create User"
 						  click="button1_clickHandler(event)" enabled="true"/>
 			</s:Panel>
+			<s:Panel x="10" y="284" width="393" height="124" title="Login User">
+				<s:Button x="311" y="60" label="Login" click="button3_clickHandler(event)"/>
+				<s:Label x="10" y="10" text="Login:"/>
+				<s:Label x="10" y="40" text="Password:"/>
+				<s:TextInput id="loginTextField" x="94" y="4" width="287" text="bill@cocoafish.com"/>
+				<s:TextInput id="loginPasswdTextField" x="94" y="34" width="287"
+							 displayAsPassword="true" text="111111"/>
+			</s:Panel>
+			<s:Panel x="411" y="284" width="303" height="124">
+				<s:Button x="18" y="10" width="89" height="26" label="Logout"
+						  click="button4_clickHandler(event)"/>
+				<s:Button x="18" y="44" width="89" height="24" label="Delete"/>
+			</s:Panel>
+		</s:NavigatorContent>
+		<s:NavigatorContent width="100%" height="100%" label="Places">
+			<s:Button x="10" y="10" label="Search Places" click="button2_clickHandler(event)"/>
 		</s:NavigatorContent>
 	</mx:TabNavigator>
 	<s:Label x="10" y="10" fontSize="20" fontWeight="bold" text="Cocoafish Actionscript SDK Tests"/>
 	<s:VGroup x="10" y="37" width="84" height="81">
 		<s:RadioButton id="appKey" label="App. Key" click="appKey_clickHandler(event)"
-					   groupName="radiogroup1" selected="true"/>
+					   groupName="radiogroup1" selected="false"/>
 		<s:RadioButton id="oauth" label="OAuth" click="oauth_clickHandler(event)" enabled="true"
-					   groupName="radiogroup1"/>
+					   groupName="radiogroup1" selected="true"/>
 	</s:VGroup>
-	<s:Label x="100" y="42" text="App. Key:"/>
-	<s:TextInput id="appKeyTextField" x="179" y="37" width="434"
+	<s:TextInput id="appKeyTextField" x="99" y="37" width="514"
 				 text="fNEQf2q7T4pQIuJTT4aRvoaHFhuiVP77"/>
-	<s:TextInput id="oauthKeyTextField" x="179" y="62" width="434" enabled="false"
+	<s:TextInput id="oauthKeyTextField" x="145" y="62" width="468" enabled="false"
 				 text="2dnrrXXeypfyLDHFbOw550BTpHEx8sED"/>
-	<s:TextInput id="oauthSecretTextField" x="179" y="87" width="434" enabled="false"
+	<s:TextInput id="oauthSecretTextField" x="146" y="87" width="467" enabled="false"
 				 text="SnUpTiNiqQHujRY98K5rfTuo6CpsMjFC"/>
-	<s:Label x="99" y="93" text="OAuth Secret:"/>
-	<s:Label x="99" y="67" text="OAuth Key:"/>
+	<s:Label x="99" y="93" text="Secret:"/>
+	<s:Label x="99" y="67" text="Key:"/>
 </s:Application>

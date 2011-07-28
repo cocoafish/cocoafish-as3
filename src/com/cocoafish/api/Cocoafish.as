@@ -57,18 +57,6 @@ package com.cocoafish.api {
 				httpMethod = method;
 			}
 			
-			var request:URLRequest = null;
-			if(appKey != null) {
-				request = new URLRequest(reqURL);
-			} else if(consumer != null) {
-				request = this.buildOAuthRequest(reqURL, httpMethod);
-			} else {
-				//TODO: error handling
-			}
-			
-			request.requestHeaders.push(new URLRequestHeader(Constants.ACCEPT_KEY, Constants.ACCEPT_VALUE));
-			var loader:URLLoader = new URLLoader();
-			
 			var photoRef:FileReference = null;
 			var attrName:String = Constants.PHOTO_KEY;
 			if(data != null) {
@@ -84,6 +72,22 @@ package com.cocoafish.api {
 					}
 				}
 			}
+			
+			var request:URLRequest = null;
+			if(appKey != null) {
+				request = new URLRequest(reqURL);
+			} else if(consumer != null) {
+				if(photoRef != null) {
+					request = this.buildOAuthRequest(reqURL, httpMethod, null);
+				} else {
+					request = this.buildOAuthRequest(reqURL, httpMethod, data);
+				}
+			} else {
+				//TODO: error handling
+			}
+			
+			request.requestHeaders.push(new URLRequestHeader(Constants.ACCEPT_KEY, Constants.ACCEPT_VALUE));
+			var loader:URLLoader = new URLLoader();
 			
 			if(photoRef != null) {
 				request.requestHeaders.push(new URLRequestHeader(Constants.CONTENT_TYPE_KEY, Constants.CONTENT_TYPE_BINARY_VALUE + UploadPostHelper.getBoundary()));
@@ -120,16 +124,16 @@ package com.cocoafish.api {
 				errorCallback(loader, event, callback);
 			});
 			
-			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, function(event:HTTPStatusEvent):void{
-				errorCallback(loader, event, callback);
-			});
+//			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, function(event:HTTPStatusEvent):void{
+//				errorCallback(loader, event, callback);
+//			});
 			
 			//send request
 			loader.load(request);
 		}
 		
-		private function buildOAuthRequest(url:String, method:String) : URLRequest {
-			var oauthRequest:OAuthRequest = new OAuthRequest(method, url, null, consumer, new OAuthToken());
+		private function buildOAuthRequest(url:String, method:String, params:Object) : URLRequest {
+			var oauthRequest:OAuthRequest = new OAuthRequest(method, url, params, consumer, new OAuthToken());
 			var signature:OAuthSignatureMethod_HMAC_SHA1 = new OAuthSignatureMethod_HMAC_SHA1();
 			var oauthRequestHeader:URLRequestHeader = oauthRequest.buildRequest(signature, OAuthRequest.RESULT_TYPE_HEADER);
 			var request:URLRequest = new URLRequest(url);
