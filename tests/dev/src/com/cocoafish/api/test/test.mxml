@@ -18,14 +18,23 @@
 			
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
-				var sdk:Cocoafish = new Cocoafish(appKeyTextField.text);
+				var sdk:Cocoafish = null;
+				if(appKey.selected) {
+					sdk = new Cocoafish(appKeyTextField.text);
+				}
+				if(oauth.selected) {
+					sdk = new Cocoafish(oauthKeyTextField.text, oauthSecretTextField.text);
+				}
 				var data:Object = new Object();
 				data.email = emailTextField.text;
 				data.first_name = firstNameTextField.text;
 				data.last_name = lastNameTextField.text;
 				data.password = passwdTextField.text;
 				data.password_confirmation = passwdConfirmTextField.text;
-				data.photo = photo;
+				if(photoRadio.selected) {
+					data.photo = photo;
+				}
+				
 				sdk.sendRequest("users/create.json", URLRequestMethod.POST, data, false, function(data:Object):void {
 					hideLoading();
 					var result:String = JSON.encode(data);
@@ -72,6 +81,17 @@
 					browseButton.enabled = false;
 					sendBtn.enabled = true;
 				}
+				
+				if(appKey.selected) {
+					appKeyTextField.enabled = true;
+					oauthKeyTextField.enabled = false;
+					oauthSecretTextField.enabled = false;
+				}
+				if(oauth.selected) {
+					appKeyTextField.enabled = false;
+					oauthKeyTextField.enabled = true;
+					oauthSecretTextField.enabled = true;
+				}
 			}
 			
 			protected function showLoading():void {
@@ -90,6 +110,17 @@
 			protected function hideLoading():void {
 				PopUpManager.removePopUp(waitingpopup);
 			}
+			
+			protected function appKey_clickHandler(event:MouseEvent):void
+			{
+				updateForm();				
+			}
+			
+			protected function oauth_clickHandler(event:MouseEvent):void
+			{
+				updateForm();
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -124,14 +155,18 @@
 	</mx:TabNavigator>
 	<s:Label x="10" y="10" fontSize="20" fontWeight="bold" text="Cocoafish Actionscript SDK Tests"/>
 	<s:VGroup x="10" y="37" width="84" height="81">
-		<s:RadioButton id="appKey" label="App. Key" groupName="radiogroup1" selected="true"/>
-		<s:RadioButton id="oauth" label="OAuth" groupName="radiogroup1" enabled="false"/>
+		<s:RadioButton id="appKey" label="App. Key" click="appKey_clickHandler(event)"
+					   groupName="radiogroup1" selected="true"/>
+		<s:RadioButton id="oauth" label="OAuth" click="oauth_clickHandler(event)" enabled="true"
+					   groupName="radiogroup1"/>
 	</s:VGroup>
 	<s:Label x="100" y="42" text="App. Key:"/>
 	<s:TextInput id="appKeyTextField" x="179" y="37" width="434"
 				 text="fNEQf2q7T4pQIuJTT4aRvoaHFhuiVP77"/>
-	<s:TextInput x="179" y="62" width="434" enabled="false"/>
-	<s:TextInput x="179" y="87" width="434" enabled="false"/>
+	<s:TextInput id="oauthKeyTextField" x="179" y="62" width="434" enabled="false"
+				 text="2dnrrXXeypfyLDHFbOw550BTpHEx8sED"/>
+	<s:TextInput id="oauthSecretTextField" x="179" y="87" width="434" enabled="false"
+				 text="SnUpTiNiqQHujRY98K5rfTuo6CpsMjFC"/>
 	<s:Label x="99" y="93" text="OAuth Secret:"/>
 	<s:Label x="99" y="67" text="OAuth Key:"/>
 </s:Application>

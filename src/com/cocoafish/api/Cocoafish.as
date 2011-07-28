@@ -4,6 +4,7 @@ package com.cocoafish.api {
 	import com.cocoafish.utils.UploadPostHelper;
 	
 	import flash.events.Event;
+	import flash.events.HTTPStatusEvent;
 	import flash.events.IOErrorEvent;
 	import flash.net.FileReference;
 	import flash.net.URLLoader;
@@ -12,12 +13,22 @@ package com.cocoafish.api {
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	
+	import org.iotashan.oauth.OAuthConsumer;
+	import org.iotashan.oauth.OAuthRequest;
+	import org.iotashan.oauth.OAuthSignatureMethod_HMAC_SHA1;
+	import org.iotashan.oauth.OAuthToken;
+	
 	public class Cocoafish {
 		var appKey:String = null;
 		var sessionId:String = null;
+		var consumer:OAuthConsumer = null;
 		
-		public function Cocoafish(appKey:String) {
-			this.appKey = appKey;
+		public function Cocoafish(key:String, oauthSecret:String = "") {
+			if(oauthSecret == "") {
+				this.appKey = key;
+			} else {
+				consumer = new OAuthConsumer(key, oauthSecret);
+			}
 		}
 		
 		public function sendRequest(url:String, method:String, data:Object, useSecure:Boolean, callback:Function):void {
@@ -25,11 +36,36 @@ package com.cocoafish.api {
 			if(useSecure) {
 				baseURL = Constants.BASE_URL_SECURE;
 			}
-			var reqURL:String = baseURL + url + Constants.KEY + appKey;
+			
+			var reqURL:String = null;
+			if(appKey != null) {
+				reqURL = baseURL + url + Constants.KEY + appKey;
+			} else if(consumer != null) {
+				reqURL = baseURL + url;
+			}
+			
 			if(this.sessionId != null) {
 				reqURL += "&" + Constants.SESSION_ID + this.sessionId;
 			}
-			var request:URLRequest = new URLRequest(reqURL);
+			
+			var httpMethod:String = null;
+			if(method == URLRequestMethod.DELETE) {
+				httpMethod = URLRequestMethod.GET;
+			} else if (method == URLRequestMethod.PUT) {
+				httpMethod = URLRequestMethod.POST;
+			} else {
+				httpMethod = method;
+			}
+			
+			var request:URLRequest = null;
+			if(appKey != null) {
+				request = new URLRequest(reqURL);
+			} else if(consumer != null) {
+				request = this.buildOAuthRequest(reqURL, httpMethod);
+			} else {
+				//TODO: error handling
+			}
+			
 			request.requestHeaders.push(new URLRequestHeader(Constants.ACCEPT_KEY, Constants.ACCEPT_VALUE));
 			var loader:URLLoader = new URLLoader();
 			
@@ -64,13 +100,7 @@ package com.cocoafish.api {
 				loader.dataFormat = URLLoaderDataFormat.BINARY;
 			} else {
 				request.requestHeaders.push(new URLRequestHeader(Constants.CONTENT_TYPE_KEY, Constants.CONTENT_TYPE_JSON_VALUE));
-				if(method == URLRequestMethod.DELETE) {
-					request.method = URLRequestMethod.GET;
-				} else if (method == URLRequestMethod.PUT) {
-					request.method = URLRequestMethod.POST;
-				} else {
-					request.method = method;
-				}
+				request.method = httpMethod;
 				if(data != null) {
 					var param:Object = JSON.encode(data);
 					if(param != null && param != "null" && param != "{}") {
@@ -90,8 +120,21 @@ package com.cocoafish.api {
 				errorCallback(loader, event, callback);
 			});
 			
+			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, function(event:HTTPStatusEvent):void{
+				errorCallback(loader, event, callback);
+			});
+			
 			//send request
 			loader.load(request);
+		}
+		
+		private function buildOAuthRequest(url:String, method:String) : URLRequest {
+			var oauthRequest:OAuthRequest = new OAuthRequest(method, url, null, consumer, new OAuthToken());
+			var signature:OAuthSignatureMethod_HMAC_SHA1 = new OAuthSignatureMethod_HMAC_SHA1();
+			var oauthRequestHeader:URLRequestHeader = oauthRequest.buildRequest(signature, OAuthRequest.RESULT_TYPE_HEADER);
+			var request:URLRequest = new URLRequest(url);
+			request.requestHeaders.push(oauthRequestHeader);
+			return request;
 		}
 		
 		private function completeCallback(loader:URLLoader, callback:Function):void {
