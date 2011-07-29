@@ -1,8 +1,12 @@
-Setup
+= Cocoafish Actionscript 3 Library
+
+== Setup
+
 The file "cocoafish-1.0.swc" is the SDK library file, to use it in an ActionScript/Flex project, just configure it into project's build path as a referenced library.
 
-Usage
-1) Import the class "com.cocoafish.api.Cocoafish"
+== Usage
+
+# Import the class "com.cocoafish.api.Cocoafish"
 2) Create an instance of class "Cocoafish" with app. key or OAuth
 - App. Key: 
 	var sdk:Cocoafish = new Cocoafish("<AppKey>");
@@ -17,12 +21,12 @@ Parameters:
  - useSecure: A boolean indicates whether to use https
  - callback: The callback function
 	
-Example
+== Example
 
 The following is an example of creating user by using the cocoafish as3 sdk.
 This example will create a user with a photo, for the photo data, the sdk accept an instance of "FileReference" as the "photo" field, and the File Reference instance should be loaded with the local file information before being passed to the sdk.
 
-Example Source Code:
+=== Example Source Code:
 
 	private var photo:FileReference;	//The FileReference instance for "photo" field of input data
 
