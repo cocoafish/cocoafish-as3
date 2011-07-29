@@ -6,13 +6,17 @@ The file "cocoafish-1.0.swc" is the SDK library file, to use it in an ActionScri
 
 == Usage
 
-# Import the class "com.cocoafish.api.Cocoafish"
-2) Create an instance of class "Cocoafish" with app. key or OAuth
+1. Import the class "com.cocoafish.api.Cocoafish"
+
+2. Create an instance of class "Cocoafish" with an app key or OAuth token & secret
+
 - App. Key: 
 	var sdk:Cocoafish = new Cocoafish("<AppKey>");
 - OAuth
 	var sdk:Cocoafish = new Cocoafish("<OAuth Key>", "<OAuth Secret>");
-3) Send API request with "sendRequest" method
+
+3. Send API request with "sendRequest" method
+
 Method: public function sendRequest(url:String, method:String, data:Object, useSecure:Boolean, callback:Function):void
 Parameters:
  - url: The API's url (without "http://api.cocoafish.com/v1/" prefix)
