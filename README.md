@@ -6,35 +6,29 @@ The file "cocoafish-1.0.swc" is the SDK library file, to use it in an ActionScri
 
 ## Usage
 
-1. Import the class "com.cocoafish.api.Cocoafish"
+1. Import the class `com.cocoafish.api.Cocoafish`
+2. Create an instance of class `Cocoafish` with an app key or OAuth consumer key & secret
 
-2. Create an instance of class "Cocoafish" with an app key or OAuth token & secret
+    var sdk:Cocoafish = new Cocoafish("<AppKey>"); // app key
+    var sdk:Cocoafish = new Cocoafish("<OAuth Key>", "<OAuth Secret>"); // OAuth key/secret
 
-  App Key: 
-  
-	var sdk:Cocoafish = new Cocoafish("<AppKey>");
-	  
-  OAuth Consumer Key & Secret:
-  
-	var sdk:Cocoafish = new Cocoafish("<OAuth Key>", "<OAuth Secret>");
+3. Send an API request with the `sendRequest` method
 
-3. Send an API request with the "sendRequest" method
-
-  Method:
+    Method:
   
-  public function sendRequest(url:String, method:String, data:Object, useSecure:Boolean, callback:Function):void
+    public function sendRequest(url:String, method:String, data:Object, useSecure:Boolean, callback:Function):void
   
-  Parameters:
+    Parameters:
   
-  url: the API url (without "http://api.cocoafish.com/v1/" prefix)
-  method: the http method (accept values are GET, POST, PUT, DELETE)
-  data: the parameters to be passed to the API
-  useSecure: a boolean that indicates whether to use https
-  callback: the callback function
+    url: the API url (without "http://api.cocoafish.com/v1/" prefix)
+    method: the http method (accept values are GET, POST, PUT, DELETE)
+    data: the parameters to be passed to the API
+    useSecure: a boolean that indicates whether to use https
+    callback: the callback function
 	
 ## Example
 
-The following is an example of creating user by using the Cocoafish as3 library. This example will create a user with a profile photo. To send photo data, the library accepts an instance of "FileReference" as the "photo" field. The File Reference instance should be loaded with the local file information before being passed to sendRequest.
+The following is an example of creating user by using the Cocoafish as3 library. This example will create a user with a profile photo. To send photo data, the library accepts an instance of `FileReference` as the `photo` field. The File Reference instance should be loaded with the local file information before being passed to `sendRequest`.
 
 ### Example Source Code:
 
