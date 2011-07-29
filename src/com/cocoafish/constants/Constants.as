@@ -1,8 +1,8 @@
 package com.cocoafish.constants {
 	public class Constants {
 		//URLs
-		public static var BASE_URL:String = "http://api.cocoafish.com/v1/";
-		public static var BASE_URL_SECURE:String = "https://api.cocoafish.com/v1/";
+		public static var BASE_URL:String = "http://api.cocoafish.com:8080/v1/";
+		public static var BASE_URL_SECURE:String = "https://api.cocoafish.com:8080/v1/";
 		public static var KEY:String = "?key=";
 		public static var SESSION_ID:String = "_session_id=";
 		

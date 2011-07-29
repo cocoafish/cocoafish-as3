@@ -24,10 +24,12 @@ package org.iotashan.oauth
                 var toBeSigned:String = request.getSignableString();
                 
                 // get the secrets to encrypt with
-                var sSec:String = URLEncoding.encode(request.consumer.secret) + "&"
+                var sSec:String = URLEncoding.encode(request.consumer.secret) + "&";
                 if (request.token)
                         sSec += URLEncoding.encode(request.token.secret);
-                
+				else 
+						sSec +="\"\"";
+				
                 // hash them
                 var hmac:HMAC = Crypto.getHMAC("sha1");
                 var key:ByteArray = Hex.toArray(Hex.fromString(sSec));

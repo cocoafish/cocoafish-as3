@@ -13,6 +13,7 @@ package com.cocoafish.api {
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	
+	import org.iotashan.oauth.IOAuthSignatureMethod;
 	import org.iotashan.oauth.OAuthConsumer;
 	import org.iotashan.oauth.OAuthRequest;
 	import org.iotashan.oauth.OAuthSignatureMethod_HMAC_SHA1;
@@ -124,20 +125,15 @@ package com.cocoafish.api {
 				errorCallback(loader, event, callback);
 			});
 			
-//			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, function(event:HTTPStatusEvent):void{
-//				errorCallback(loader, event, callback);
-//			});
-			
 			//send request
 			loader.load(request);
 		}
 		
 		private function buildOAuthRequest(url:String, method:String, params:Object) : URLRequest {
-			var oauthRequest:OAuthRequest = new OAuthRequest(method, url, params, consumer, new OAuthToken());
-			var signature:OAuthSignatureMethod_HMAC_SHA1 = new OAuthSignatureMethod_HMAC_SHA1();
-			var oauthRequestHeader:URLRequestHeader = oauthRequest.buildRequest(signature, OAuthRequest.RESULT_TYPE_HEADER);
-			var request:URLRequest = new URLRequest(url);
-			request.requestHeaders.push(oauthRequestHeader);
+			var oauthRequest:OAuthRequest = new OAuthRequest(method, url, params, consumer, null);
+			var signatureMethod:IOAuthSignatureMethod = new OAuthSignatureMethod_HMAC_SHA1();
+			var oauthURL:String = oauthRequest.buildRequest(signatureMethod, OAuthRequest.RESULT_TYPE_URL_STRING);
+			var request:URLRequest = new URLRequest(oauthURL);
 			return request;
 		}
 		
@@ -149,6 +145,7 @@ package com.cocoafish.api {
 				if(sessionId != null) {
 					setSessionId(sessionId);
 				}
+				json.json = data;
 				callback(json);
 			} else {
 				callback(new Object());
@@ -157,7 +154,6 @@ package com.cocoafish.api {
 		
 		private function errorCallback(loader:Object, event:Event, callback:Function):void {
 			callback(event);
-			trace(event);
 		}
 		
 		private function parseSessionId(data:Object):String {

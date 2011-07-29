@@ -16,6 +16,7 @@ package org.iotashan.oauth
 		private var _httpMethod:String;
 		private var _requestURL:String;
 		private var _requestParams:Object;
+		private var _oauthReqParams:Object;
 		private var _consumer:OAuthConsumer;
 		private var _token:OAuthToken;
 		private var _version:String;
@@ -38,6 +39,7 @@ package org.iotashan.oauth
 			_consumer = consumer;
 			_token = token;
 			_version = version;
+			_oauthReqParams = new Object();
 		}
 
 		/**
@@ -135,32 +137,33 @@ package org.iotashan.oauth
 			var uuid:String = UIDUtil.getUID(curDate);
 
 			// first, let's add the oauth required params
-			_requestParams["oauth_nonce"] = uuid;
-			_requestParams["oauth_timestamp"] = String(curDate.time).substring(0, 10);
-			_requestParams["oauth_consumer_key"] = _consumer.key;
-			_requestParams["oauth_signature_method"] = signatureMethod.name;
-			_requestParams["oauth_version"] = _version;
+			
+			_oauthReqParams["oauth_nonce"] = uuid;
+			_oauthReqParams["oauth_timestamp"] = String(curDate.time).substring(0, 10);
+			_oauthReqParams["oauth_consumer_key"] = _consumer.key;
+			_oauthReqParams["oauth_signature_method"] = signatureMethod.name;
+			_oauthReqParams["oauth_version"] = _version;
 				
 			// if there already is a token, add that too
 			if (_token) {
-				_requestParams["oauth_token"] = _token.key;
+				_oauthReqParams["oauth_token"] = _token.key;
 			} else {
 				// if there is no token, remove any old ones
-				if (_requestParams.hasOwnProperty("oauth_token"))
-					var checkDelete:Boolean = delete(_requestParams.oauth_token);
+				if (_oauthReqParams.hasOwnProperty("oauth_token"))
+					var checkDelete:Boolean = delete(_oauthReqParams.oauth_token);
 			}
 
 			// generate the signature
 			var signature:String = signatureMethod.signRequest(this);
-			_requestParams["oauth_signature"] = signature;
+			_oauthReqParams["oauth_signature"] = signature;
 
 			switch (resultType) {
 				case RESULT_TYPE_URL_STRING:
-					var ret1:String = _requestURL + "?" + getParameters();
+					var ret1:String = _requestURL + "?" + getOAuthParameters();
 					return ret1;
 				break;
 				case RESULT_TYPE_POST:
-					var ret4:String = getParameters();
+					var ret4:String = getOAuthParameters();
 					return ret4;
 				break;
 				case RESULT_TYPE_HEADER:
@@ -172,9 +175,9 @@ package org.iotashan.oauth
 					var params:String = "";
 					for (var param:Object in _requestParams) {
 						// if this is an oauth param, include it
-						if (param.toString().indexOf("oauth") == 0) {
-							params += "," + param + "=\"" + URLEncoding.encode(_requestParams[param]) + "\"";
-						}
+//						if (param.toString().indexOf("oauth") == 0) {
+						params += "," + param + "=\"" + URLEncoding.encode(_oauthReqParams[param]) + "\"";
+//						}
 					}
 					//remove the comma
 					if(params.length > 0) {
@@ -195,7 +198,7 @@ package org.iotashan.oauth
 
 			// loop over params, find the ones we need
 			for (var param:String in _requestParams) {
-				if (param != "oauth_signature")
+//				if (param != "oauth_signature")
 					aParams.push(param + "=" + URLEncoding.encode(_requestParams[param].toString()));
 			}
 
@@ -209,12 +212,12 @@ package org.iotashan.oauth
 		/**
 		 * Returns a string that consists of all the parameters that need to be signed
 		*/
-		private function getParameters():String {
+		private function getOAuthParameters():String {
 			var aParams:Array = new Array();
 
 			// loop over params, find the ones we need
-			for (var param:String in _requestParams) {
-				aParams.push(param + "=" + URLEncoding.encode(_requestParams[param].toString()));
+			for (var param:String in _oauthReqParams) {
+				aParams.push(param + "=" + URLEncoding.encode(_oauthReqParams[param].toString()));
 			}
 
 			// put them in the right order
@@ -232,9 +235,11 @@ package org.iotashan.oauth
 			var ret:String = URLEncoding.encode(_httpMethod.toUpperCase());
 			ret += "&";
 			ret += URLEncoding.encode(_requestURL);
-			ret += "&";
-			ret += URLEncoding.encode(getSignableParameters());
-
+			var params:String = getSignableParameters();
+			if(params.length > 0) {
+				ret += "&";
+				ret += URLEncoding.encode(params);
+			}
 			return ret;
 		}
 	}
