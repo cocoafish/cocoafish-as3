@@ -1,41 +1,47 @@
-= Cocoafish Actionscript 3 Library
+# Cocoafish Actionscript 3 Library
 
-== Setup
+## Setup
 
 The file "cocoafish-1.0.swc" is the SDK library file, to use it in an ActionScript/Flex project, just configure it into project's build path as a referenced library.
 
-== Usage
+## Usage
 
 1. Import the class "com.cocoafish.api.Cocoafish"
 
 2. Create an instance of class "Cocoafish" with an app key or OAuth token & secret
 
-- App. Key: 
+  App Key: 
+  
 	var sdk:Cocoafish = new Cocoafish("<AppKey>");
-- OAuth
+	  
+  OAuth Consumer Key & Secret:
+  
 	var sdk:Cocoafish = new Cocoafish("<OAuth Key>", "<OAuth Secret>");
 
-3. Send API request with "sendRequest" method
+3. Send an API request with the "sendRequest" method
 
-Method: public function sendRequest(url:String, method:String, data:Object, useSecure:Boolean, callback:Function):void
-Parameters:
- - url: The API's url (without "http://api.cocoafish.com/v1/" prefix)
- - method: The http method (accept values are GET, POST, PUT, DELETE)
- - data: The parameters to be passed to the API
- - useSecure: A boolean indicates whether to use https
- - callback: The callback function
+  Method:
+  
+  public function sendRequest(url:String, method:String, data:Object, useSecure:Boolean, callback:Function):void
+  
+  Parameters:
+  
+  url: the API url (without "http://api.cocoafish.com/v1/" prefix)
+  method: the http method (accept values are GET, POST, PUT, DELETE)
+  data: the parameters to be passed to the API
+  useSecure: a boolean that indicates whether to use https
+  callback: the callback function
 	
-== Example
+## Example
 
-The following is an example of creating user by using the cocoafish as3 sdk.
-This example will create a user with a photo, for the photo data, the sdk accept an instance of "FileReference" as the "photo" field, and the File Reference instance should be loaded with the local file information before being passed to the sdk.
+The following is an example of creating user by using the Cocoafish as3 library. This example will create a user with a profile photo. To send photo data, the library accepts an instance of "FileReference" as the "photo" field. The File Reference instance should be loaded with the local file information before being passed to sendRequest.
 
-=== Example Source Code:
+### Example Source Code:
 
-	private var photo:FileReference;	//The FileReference instance for "photo" field of input data
+	private var photo:FileReference;	// FileReference instance for "photo" field of input data
 
-	var sdk:Cocoafish = new Cocoafish("<AppKey>");	//using app key
-	//var sdk:Cocoafish = new Cocoafish("<OAuth Key>", "<OAuth Secret>");	//using OAuth
+	var sdk:Cocoafish = new Cocoafish("tplS0cAZtDjO1QYOdQphroMcLIJ98WJZ");	// using app key
+	//var sdk:Cocoafish = new Cocoafish("2ywmQMDvPvDvySPjfTykTFHEPxa0zKDE", "63Y2eW7QmmUTpGmNUxrGoHzx7760od9u");	// using OAuth
 	
 	//the user's parameters
 	var data:Object = new Object();
@@ -51,7 +57,7 @@ This example will create a user with a photo, for the photo data, the sdk accept
 		Alert.show(result);
 	});
 	
-	//Browse and load photo file
+	// Browse and load photo file
 	protected function selectPhoto(event:MouseEvent):void {
 		photo= new FileReference();
 		photo.addEventListener(Event.SELECT, photoSelected);
