@@ -10,7 +10,7 @@ The Cocoafish Actionscript 3 library is contained within the file `cocoafish-1.0
 2. Create an instance of class `Cocoafish` with an app key or OAuth consumer key & secret
 
     `var sdk:Cocoafish = new Cocoafish("<AppKey>"); // app key`  
-    `var sdk:Cocoafish = new Cocoafish("<OAuth Key>", "<OAuth Secret>"); // OAuth key/secret`
+    `var sdk:Cocoafish = new Cocoafish("<OAuth Key>", "<OAuth Secret>"); // OAuth key & secret`
 
 3. Send an API request with the `sendRequest` method
 
@@ -34,8 +34,8 @@ The following is an example of creating user by using the Cocoafish as3 library.
 
   	private var photo:FileReference;	// FileReference instance for "photo" field of input data
 
-  	var sdk:Cocoafish = new Cocoafish("tplS0cAZtDjO1QYOdQphroMcLIJ98WJZ");	// using app key
-  	//var sdk:Cocoafish = new Cocoafish("2ywmQMDvPvDvySPjfTykTFHEPxa0zKDE", "63Y2eW7QmmUTpGmNUxrGoHzx7760od9u");	// using OAuth
+  	var sdk:Cocoafish = new Cocoafish("tplS0cAZtDjO1QYOdQphroMcLIJ98WJZ"); // app key
+  	//var sdk:Cocoafish = new Cocoafish("2ywmQMDvPvDvySPjfTykTFHEPxa0zKDE", "63Y2eW7QmmUTpGmNUxrGoHzx7760od9u"); // OAuth key & secret
 	
   	//the user's parameters
   	var data:Object = new Object();
