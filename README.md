@@ -32,39 +32,39 @@ The following is an example of creating user by using the Cocoafish as3 library.
 
 ### Example Source Code
 
-	private var photo:FileReference;	// FileReference instance for "photo" field of input data
+  	private var photo:FileReference;	// FileReference instance for "photo" field of input data
 
-	var sdk:Cocoafish = new Cocoafish("tplS0cAZtDjO1QYOdQphroMcLIJ98WJZ");	// using app key
-	//var sdk:Cocoafish = new Cocoafish("2ywmQMDvPvDvySPjfTykTFHEPxa0zKDE", "63Y2eW7QmmUTpGmNUxrGoHzx7760od9u");	// using OAuth
+  	var sdk:Cocoafish = new Cocoafish("tplS0cAZtDjO1QYOdQphroMcLIJ98WJZ");	// using app key
+  	//var sdk:Cocoafish = new Cocoafish("2ywmQMDvPvDvySPjfTykTFHEPxa0zKDE", "63Y2eW7QmmUTpGmNUxrGoHzx7760od9u");	// using OAuth
 	
-	//the user's parameters
-	var data:Object = new Object();
-	data.email = "test@cocoafish.com";
-	data.first_name = "test_firstname";
-	data.last_name = "test_lastname";
-	data.password = "test_password";
-	data.password_confirmation = "test_password";
-	data.photo = photo;
+  	//the user's parameters
+  	var data:Object = new Object();
+  	data.email = "test@cocoafish.com";
+  	data.first_name = "test_firstname";
+  	data.last_name = "test_lastname";
+  	data.password = "test_password";
+  	data.password_confirmation = "test_password";
+  	data.photo = photo;
 				
-	sdk.sendRequest("users/create.json", URLRequestMethod.POST, data, false, function(data:Object):void {
-		var result:String = JSON.encode(data);
-		Alert.show(result);
-	});
+  	sdk.sendRequest("users/create.json", URLRequestMethod.POST, data, false, function(data:Object):void {
+  		var result:String = JSON.encode(data);
+  		Alert.show(result);
+  	});
 	
-	// Browse and load photo file
-	protected function selectPhoto(event:MouseEvent):void {
-		photo= new FileReference();
-		photo.addEventListener(Event.SELECT, photoSelected);
-		photo.browse();
-	}
+  	// Browse and load photo file
+  	protected function selectPhoto(event:MouseEvent):void {
+  		photo= new FileReference();
+  		photo.addEventListener(Event.SELECT, photoSelected);
+  		photo.browse();
+  	}
 			
-	protected function photoSelected(event:Event):void {
-		photoTextField.text = photo.name;
-		photo.removeEventListener(Event.SELECT, photoSelected);
-		photo.addEventListener(Event.COMPLETE, photoLoaded);
-		photo.load();
-	}
+  	protected function photoSelected(event:Event):void {
+  		photoTextField.text = photo.name;
+  		photo.removeEventListener(Event.SELECT, photoSelected);
+  		photo.addEventListener(Event.COMPLETE, photoLoaded);
+  		photo.load();
+  	}
 			
-	protected function photoLoaded(event:Event):void {
-		photo.removeEventListener(Event.COMPLETE, photoLoaded);
-	}
+  	protected function photoLoaded(event:Event):void {
+  		photo.removeEventListener(Event.COMPLETE, photoLoaded);
+  	}
