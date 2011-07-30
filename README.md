@@ -4,7 +4,7 @@ This is a Flex wrapper for the Cocoafish REST API that can be used in your Flash
 
 ## Setup
 
-The Cocoafish ActionScript 3 library is contained within the file `cocoafish-1.0.swc`. To use it in an ActionScript/Flex project, configure it into project's build path as a referenced library. Before your app can access the Cocoafish API servers, you must:
+The Cocoafish ActionScript 3 library is contained within the file `bin/cocoafish-1.0.swc`. To use it in an ActionScript/Flex project, configure it into project's build path as a referenced library. Before your app can access the Cocoafish API servers, you must:
 
 1. Request a Beta invitation code at http://cocoafish.com/beta/signup
 2. Use the Beta invitation code to create an account at http://cocoafish.com/signup
