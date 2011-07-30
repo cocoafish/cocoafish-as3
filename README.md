@@ -14,17 +14,17 @@ The file `cocoafish-1.0.swc` is the SDK library file, to use it in an ActionScri
 
 3. Send an API request with the `sendRequest` method
 
->Method:
->
->     public function sendRequest(url:String, method:String, data:Object, useSecure:Boolean, callback:Function):void
->
->Parameters:
+Method:  
 
->     url: the API url (without "http://api.cocoafish.com/v1/" prefix)
->     method: the http method (accept values are GET, POST, PUT, DELETE)
->     data: the parameters to be passed to the API
->     useSecure: a boolean that indicates whether to use https
->     callback: the callback function
+     public function sendRequest(url:String, method:String, data:Object, useSecure:Boolean, callback:Function):void
+
+Parameters:  
+
+     url: the API url (without "http://api.cocoafish.com/v1/" prefix)  
+     method: the http method (accept values are GET, POST, PUT, DELETE)  
+     data: the parameters to be passed to the API  
+     useSecure: a boolean that indicates whether to use https  
+     callback: the callback function  
 
 ## Example
 
