@@ -2,17 +2,17 @@
 
 ## Setup
 
-The file "cocoafish-1.0.swc" is the SDK library file, to use it in an ActionScript/Flex project, just configure it into project's build path as a referenced library.
+The file `cocoafish-1.0.swc` is the SDK library file, to use it in an ActionScript/Flex project, just configure it into project's build path as a referenced library.
 
 ## Usage
 
-1. Import the class `com.cocoafish.api.Cocoafish`
-2. Create an instance of class `Cocoafish` with an app key or OAuth consumer key & secret
+* Import the class `com.cocoafish.api.Cocoafish`
+* Create an instance of class `Cocoafish` with an app key or OAuth consumer key & secret
 
->     var sdk:Cocoafish = new Cocoafish("<AppKey>"); // app key
->     var sdk:Cocoafish = new Cocoafish("<OAuth Key>", "<OAuth Secret>"); // OAuth key/secret
+var sdk:Cocoafish = new Cocoafish("<AppKey>"); // app key
+var sdk:Cocoafish = new Cocoafish("<OAuth Key>", "<OAuth Secret>"); // OAuth key/secret
 
-3. Send an API request with the `sendRequest` method
+* Send an API request with the `sendRequest` method
 
 >Method:
 >
