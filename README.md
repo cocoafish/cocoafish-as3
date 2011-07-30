@@ -2,7 +2,7 @@
 
 ## Setup
 
-The file `cocoafish-1.0.swc` is the SDK library file, to use it in an ActionScript/Flex project, just configure it into project's build path as a referenced library.
+The Cocoafish Actionscript 3 library is contained within the file `cocoafish-1.0.swc`. To use it in an ActionScript/Flex project, just configure it into project's build path as a referenced library.
 
 ## Usage
 
