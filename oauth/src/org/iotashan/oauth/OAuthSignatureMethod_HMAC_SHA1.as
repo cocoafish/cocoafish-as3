@@ -27,8 +27,6 @@ package org.iotashan.oauth
                 var sSec:String = URLEncoding.encode(request.consumer.secret) + "&";
                 if (request.token)
                         sSec += URLEncoding.encode(request.token.secret);
-				else 
-						sSec +="\"\"";
 				
                 // hash them
                 var hmac:HMAC = Crypto.getHMAC("sha1");

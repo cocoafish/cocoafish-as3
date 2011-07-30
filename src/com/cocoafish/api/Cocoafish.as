@@ -63,12 +63,12 @@ package com.cocoafish.api {
 			if(data != null) {
 				photoRef = data.photo;
 				if(photoRef != null) {
-					data.photo = null;
+					delete(data.photo);
 					attrName= Constants.PHOTO_KEY;
 				} else {
 					photoRef = data.file;
 					if(photoRef != null) {
-						data.file = null;
+						delete(data.file);
 						attrName= Constants.FILE_KEY;
 					}
 				}

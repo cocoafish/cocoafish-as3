@@ -198,10 +198,14 @@ package org.iotashan.oauth
 
 			// loop over params, find the ones we need
 			for (var param:String in _requestParams) {
-//				if (param != "oauth_signature")
-					aParams.push(param + "=" + URLEncoding.encode(_requestParams[param].toString()));
+				aParams.push(param + "=" + URLEncoding.encode(_requestParams[param].toString()));
 			}
 
+			for (var param:String in _oauthReqParams) {
+				if (param != "oauth_signature")
+					aParams.push(param + "=" + URLEncoding.encode(_oauthReqParams[param].toString()));
+			}
+			
 			// put them in the right order
 			aParams.sort();
 
@@ -235,11 +239,8 @@ package org.iotashan.oauth
 			var ret:String = URLEncoding.encode(_httpMethod.toUpperCase());
 			ret += "&";
 			ret += URLEncoding.encode(_requestURL);
-			var params:String = getSignableParameters();
-			if(params.length > 0) {
-				ret += "&";
-				ret += URLEncoding.encode(params);
-			}
+			ret += "&";
+			ret += URLEncoding.encode(getSignableParameters());
 			return ret;
 		}
 	}
