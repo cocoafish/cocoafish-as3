@@ -173,7 +173,7 @@ package org.iotashan.oauth
 					if (headerRealm.length > 0)
 						data += " realm=\"" + headerRealm + "\"";
 					var params:String = "";
-					for (var param:Object in _requestParams) {
+					for (var param:Object in _oauthReqParams) {
 						// if this is an oauth param, include it
 //						if (param.toString().indexOf("oauth") == 0) {
 						params += "," + param + "=\"" + URLEncoding.encode(_oauthReqParams[param]) + "\"";
