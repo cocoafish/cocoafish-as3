@@ -12,12 +12,14 @@ package com.cocoafish.api {
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 	
 	import org.iotashan.oauth.IOAuthSignatureMethod;
 	import org.iotashan.oauth.OAuthConsumer;
 	import org.iotashan.oauth.OAuthRequest;
 	import org.iotashan.oauth.OAuthSignatureMethod_HMAC_SHA1;
 	import org.iotashan.oauth.OAuthToken;
+	import org.iotashan.utils.URLEncoding;
 	
 	public class Cocoafish {
 		var appKey:String = null;
@@ -107,9 +109,16 @@ package com.cocoafish.api {
 				request.requestHeaders.push(new URLRequestHeader(Constants.CONTENT_TYPE_KEY, Constants.CONTENT_TYPE_JSON_VALUE));
 				request.method = httpMethod;
 				if(data != null) {
-					var param:Object = JSON.encode(data);
-					if(param != null && param != "null" && param != "{}") {
-						request.data = param;
+					if(httpMethod == URLRequestMethod.GET) {
+						var params:String = getURLParameters(data);
+						if(params.length > 0) {
+							request.url += "&" + params;
+						}
+					} else {
+						var param:Object = JSON.encode(data);
+						if(param != null && param != "null" && param != "{}") {
+							request.data = param;
+						}
 					}
 				}
 				loader.dataFormat = URLLoaderDataFormat.TEXT;
@@ -180,6 +189,15 @@ package com.cocoafish.api {
 			} else {
 				return fileName.substr(extensionIndex + 1 ,fileName.length);
 			}
+		}
+		
+		private function getURLParameters(data:Object):String {
+			var params:Array = new Array();
+			for (var param:String in data) {
+				params.push(param + "=" + URLEncoding.encode(data[param].toString()));
+			}
+			params.sort();
+			return params.join("&");
 		}
 	}
 }

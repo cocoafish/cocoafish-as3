@@ -8,10 +8,11 @@
 		<![CDATA[
 			import com.adobe.serialization.json.JSON;
 			import com.cocoafish.api.Cocoafish;
+			
+			import mx.containers.TitleWindow;
 			import mx.controls.Alert;
 			import mx.controls.ProgressBar;
 			import mx.managers.PopUpManager;
-			import mx.containers.TitleWindow;
 			
 			private var photo:FileReference;
 			private var isPhotoLoaded:Boolean = false;
@@ -131,7 +132,9 @@
 				if(oauth.selected) {
 					sdk = new Cocoafish(oauthKeyTextField.text, oauthSecretTextField.text);
 				}
-				sdk.sendRequest("places/search.json", URLRequestMethod.GET, null, false, function(data:Object):void {
+				var param:Object = new Object();
+				param.per_page = "20";
+				sdk.sendRequest("places/search.json", URLRequestMethod.GET, param, false, function(data:Object):void {
 					hideLoading();
 					var result:String = JSON.encode(data);
 					trace(result);
