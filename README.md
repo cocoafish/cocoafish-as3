@@ -61,7 +61,7 @@ The following is an example of creating user by using the Cocoafish AS3 library.
 				
     sdk.sendRequest("users/create.json", URLRequestMethod.POST, data, false, function(data:Object):void {
 		if(data) {
-			if(data.meta) {
+			if(data.hasOwnProperty("meta")) {
 				var meta:Object = data.meta;
 				if(meta.status == "ok" && meta.code == 200 && meta.method_name == "createUser") {
 					var message:String = "";

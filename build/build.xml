@@ -18,6 +18,7 @@
 	<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
 
 	<property name="swc.name" value="${library.name}-${library.version}" />
+	<property name="oauth.swc.name" value="${oauth.library.name}" />
 	
 	<!-- ============================== -->
 	<!--  Clean and Init Targets -->
@@ -46,13 +47,26 @@
 	<!-- ======================================= -->
 	<!-- Compile and Document -->
 	<!-- ======================================= -->
-
-	<target name="compile" depends="init" description="Compile the library ${swc.name}.swc file">
+	<target name="compile" depends="init, compile.oauth" description="Compile the library ${swc.name}.swc file">
 		<compc output="${bin.dir}/${swc.name}.swc" debug="false" optimize="true">
 			<load-config filename="${FLEX_HOME}/frameworks/air-config.xml" />
 			<source-path path-element="${src.dir}" />
 			<include-sources dir="${src.dir}" includes="*" />
 			<library-path dir="${build.libs.dir}" append="true">
+				<include name="*.swc" />
+			</library-path>
+		</compc>
+	</target>
+	
+	<!-- ======================================= -->
+	<!-- Compile OAuth AS3 Lib-->
+	<!-- ======================================= -->
+	<target name="compile.oauth" depends="init" description="Compile the library ${oauth.swc.name}.swc file">
+		<compc output="${build.libs.dir}/${oauth.swc.name}.swc" debug="false" optimize="true">
+			<load-config filename="${FLEX_HOME}/frameworks/air-config.xml" />
+			<source-path path-element="${oauth.src.dir}" />
+			<include-sources dir="${oauth.src.dir}" includes="*" />
+			<library-path dir="${oauth.build.libs.dir}" append="true">
 				<include name="*.swc" />
 			</library-path>
 		</compc>

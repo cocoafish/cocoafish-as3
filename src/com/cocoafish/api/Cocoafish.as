@@ -43,12 +43,11 @@ package com.cocoafish.api {
 			var reqURL:String = null;
 			if(appKey != null) {
 				reqURL = baseURL + url + Constants.KEY + appKey;
+				if(this.sessionId != null) {
+					reqURL += "&" + Constants.SESSION_ID + this.sessionId;
+				}
 			} else if(consumer != null) {
 				reqURL = baseURL + url;
-			}
-			
-			if(this.sessionId != null) {
-				reqURL += "&" + Constants.SESSION_ID + this.sessionId;
 			}
 			
 			var httpMethod:String = null;
