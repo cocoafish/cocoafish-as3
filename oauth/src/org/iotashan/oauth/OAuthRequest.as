@@ -89,6 +89,18 @@ package org.iotashan.oauth
 				_requestParams = val;
 		}
 
+		public function get oauthRequestParams():Object {
+			return _oauthReqParams;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set oauthRequestParams(val:Object):void {
+			if (val != _oauthReqParams)
+				_oauthReqParams = val;
+		}
+		
 		/**
 		 *
 		*/
@@ -163,8 +175,7 @@ package org.iotashan.oauth
 					return ret1;
 				break;
 				case RESULT_TYPE_POST:
-					var ret4:String = getOAuthParameters();
-					return ret4;
+					return _oauthReqParams;
 				break;
 				case RESULT_TYPE_HEADER:
 					var data:String = "";

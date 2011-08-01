@@ -47,8 +47,8 @@ The following is an example of creating user by using the Cocoafish AS3 library.
 
     private var photo:FileReference;	// FileReference instance for "photo" field of input data
     
-    var sdk:Cocoafish = new Cocoafish("tplS0cAZtDjO1QYOdQphroMcLIJ98WJZ"); // app key
-    //var sdk:Cocoafish = new Cocoafish("2ywmQMDvPvDvySPjfTykTFHEPxa0zKDE", "63Y2eW7QmmUTpGmNUxrGoHzx7760od9u"); // OAuth key & secret
+    var sdk:Cocoafish = new Cocoafish("tplS0cAZtDjO1QYOdiOhroMcLIJ98WJZ"); // app key
+    //var sdk:Cocoafish = new Cocoafish("2ywmQMDvPvDvySPjfTykUIMkPxa0zKDE", "63Y2eW7QmmUTpGmNUxrGoHzf9060od9u"); // OAuth key & secret
 	
     //the user's parameters
     var data:Object = new Object();
@@ -60,8 +60,21 @@ The following is an example of creating user by using the Cocoafish AS3 library.
     data.photo = photo;
 				
     sdk.sendRequest("users/create.json", URLRequestMethod.POST, data, false, function(data:Object):void {
-      var result:String = JSON.encode(data);
-      Alert.show(result);
+		if(data) {
+			if(data.hasOwnProperty("meta")) {
+				var meta:Object = data.meta;
+				if(meta.status == "ok" && meta.code == 200 && meta.method_name == "createUser") {
+					var message:String = "";
+					var user:Object = data.response.users[0];
+					message += "Create user successful!\n";
+					message += "id:" + user.id + "\n";
+					message += "first name:" + user.first_name + "\n";
+					message += "last name:" + user.last_name + "\n";
+					message += "email:" + user.email + "\n";
+					Alert.show(message);
+				}
+			}
+		}
     });
 	
     // Browse and load photo file
