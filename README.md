@@ -110,7 +110,7 @@ You must then edit the Properties of the cocoafish-as3-test project to change th
 2. Select Flex Build Path
 3. Click on the Source Path tab
 4. Select the existing "/Users/apple/work/git/cocoafish-as3/src" entry, select Edit and change it to the corresponding absolute path on your system
-5. Do that same for the "/Users/apple/work/git/cocoafish-as3/oauth/src" entry
+5. Select the existing "/Users/apple/work/git/cocoafish-as3/oauth/src" entry, select Edit and change it to the corresponding absolute path on your system
 6. Click OK to exit the Properties editor
 
 After doing this configuration, you'll be able to make changes and rebuild the test app.
