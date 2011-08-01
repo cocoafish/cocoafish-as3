@@ -84,4 +84,20 @@ The following is an example of creating user by using the Cocoafish AS3 library.
     
 ## Sample Flash App
 
-The `tests/dev` folder contains a [sample Flash app](https://github.com/cocoafish/cocoafish-as3/tree/master/tests/dev) that demonstrates how to use the Cocoafish AS3 library. To build and run it yourself, import it into Flash Builder. You must then edit the Properties of the cocoafish-as3-test project to change the Flex Source Build path to reflect the absolute path on your system to the `cocoafish-as3/src` folder.
+The `tests/dev` folder contains a [sample Flash app](https://github.com/cocoafish/cocoafish-as3/tree/master/tests/dev) that demonstrates how to use the Cocoafish AS3 library. To build and run it yourself, import it into Flash Builder:
+
+1. Select File -> Import Flash Builder Project
+2. In the wizard that pops up, select Project folder
+3. Click Browse and select the tests/dev folder in the cocoafish-as3 project code downloaded from Github
+4. Click Finish
+
+You must then edit the Properties of the cocoafish-as3-test project to change the Flex Source Build path to reflect the absolute path on your system to the `cocoafish-as3/src` folder:
+
+1. Right click on cocoafish-as3-test in Package Explorer and select Properties
+2. Select Flex Build Path
+3. Click on the Source Path tab
+4. Select the existing "/Users/apple/work/git/cocoafish-as3/src" entry, select Edit and change it to the corresponding absolute path on your system
+5. Do that same for the "/Users/apple/work/git/cocoafish-as3/oauth/src" entry
+6. Click OK to exit the Properties editor
+
+After doing this configuration, you'll be able to make changes and rebuild the test app.
