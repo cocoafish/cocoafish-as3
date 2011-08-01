@@ -39,6 +39,11 @@ which takes the following parameters:
 
 The specified callback function will be invoked with a single parameter of type `Object`. This contains the results of JSON response from the Cocoafish API server, accessible by using dot "." notation to access individual fields.
 
+## Notes
+
+* Only the app key access method to use the Cocoafish API is currently working. We are still implementing the use of OAuth.
+* Incorrect logins will return a 401 HTTP response code. When running the Cocoafish AS3 library in a browser from Flash, this will trigger the browser to popup a login window. To workaround this, add the `suppress_response_codes=true` parameter to your requests to force the response to always be 200. However, you can still read the actual response code by accessing `data.meta.code` from you callback method.
+
 ## Example
 
 The following is an example of creating user by using the Cocoafish AS3 library. This example will create a user with a profile photo. To send photo data, the library accepts an instance of `FileReference` as the `photo` field. The `FileReference` instance should be loaded with the local file information before being passed to `sendRequest`.
