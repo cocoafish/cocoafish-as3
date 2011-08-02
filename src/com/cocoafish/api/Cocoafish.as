@@ -13,7 +13,7 @@ package com.cocoafish.api {
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
-	
+	import mx.utils.URLUtil;
 	import org.iotashan.oauth.IOAuthSignatureMethod;
 	import org.iotashan.oauth.OAuthConsumer;
 	import org.iotashan.oauth.OAuthRequest;
@@ -105,18 +105,14 @@ package com.cocoafish.api {
 				request.data = UploadPostHelper.getPostData( photoRef.name, photoRef.data, attrName, fileType, data);
 				loader.dataFormat = URLLoaderDataFormat.BINARY;
 			} else {
-				request.requestHeaders.push(new URLRequestHeader(Constants.CONTENT_TYPE_KEY, Constants.CONTENT_TYPE_JSON_VALUE));
 				request.method = httpMethod;
 				if(data != null) {
-					if(httpMethod == URLRequestMethod.GET) {
-						var params:String = getURLParameters(data);
-						if(params.length > 0) {
+					var params:String = getURLParameters(data);
+					if(params != null && params.length > 0) {
+						if(httpMethod == URLRequestMethod.GET) {
 							request.url += "&" + params;
-						}
-					} else {
-						var param:Object = JSON.encode(data);
-						if(param != null && param != "null" && param != "{}") {
-							request.data = param;
+						} else {
+							request.data = params;
 						}
 					}
 				}
@@ -191,12 +187,8 @@ package com.cocoafish.api {
 		}
 		
 		private function getURLParameters(data:Object):String {
-			var params:Array = new Array();
-			for (var param:String in data) {
-				params.push(param + "=" + URLEncoding.encode(data[param].toString()));
-			}
-			params.sort();
-			return params.join("&");
+			var params:String = URLUtil.objectToString(data, "&");
+			return params;
 		}
 	}
 }
