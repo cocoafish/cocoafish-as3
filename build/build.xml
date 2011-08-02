@@ -56,6 +56,7 @@
 				<include name="*.swc" />
 			</library-path>
 		</compc>
+		<copy tofile="${basedir}/tests/dev/libs/${swc.name}.swc" file="${bin.dir}/${swc.name}.swc" />
 	</target>
 	
 	<!-- ======================================= -->
