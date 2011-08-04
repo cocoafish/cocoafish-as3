@@ -59,6 +59,14 @@ package com.cocoafish.api {
 				httpMethod = method;
 			}
 			
+			//append suppress_response_codes=true
+			if(data == null) {
+				data = new Object();
+			}
+			if(!data.hasOwnProperty("suppress_response_codes")) {
+				data.suppress_response_codes = true;
+			}
+			
 			var photoRef:FileReference = null;
 			var attrName:String = Constants.PHOTO_KEY;
 			if(data != null) {

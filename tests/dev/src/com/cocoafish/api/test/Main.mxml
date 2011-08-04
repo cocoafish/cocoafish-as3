@@ -51,12 +51,14 @@
 								message += "last name:" + user.last_name + "\n";
 								message += "email:" + user.email + "\n";
 								Alert.show(message);
+							} else {
+								var message:String = "Create user failed.\n\n";
+								message += "Code:" + meta.code + "\n";
+								message += "Details:" + meta.message + "\n";
+								Alert.show(message);
 							}
 						}
 					}
-					
-					var result:String = JSON.encode(data);
-					trace(result);
 				});
 				showLoading();
 			}
