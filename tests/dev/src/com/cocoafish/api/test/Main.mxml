@@ -2,8 +2,12 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
 			   xmlns:s="library://ns.adobe.com/flex/spark"
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   width="100%" minWidth="955" minHeight="600" applicationComplete="updateForm()">
-	
+			   width="100%" minWidth="955" minHeight="600" 
+			   applicationComplete="updateForm()"
+			   xmlns:containers="com.dougmccune.containers.*">
+	<fx:Script source="scripts/collections.as"/>
+	<fx:Script source="scripts/common.as"/>
+	<fx:Script source="scripts/keyvalues.as"/>
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.serialization.json.JSON;
@@ -229,7 +233,7 @@
 							 enabled="false"/>
 				<s:Button id="browseButton" x="312" y="155" label="Browse..."
 						  click="selectPhoto(event)" enabled="false"/>
-				<s:Button id="sendBtn" x="297" y="189" width="85" label="Create User"
+				<s:Button id="sendBtn" x="279" y="189" width="103" label="Create User"
 						  click="button1_clickHandler(event)" enabled="true"/>
 			</s:Panel>
 			<s:Panel x="10" y="284" width="393" height="124" title="Login User">
@@ -248,6 +252,48 @@
 		</s:NavigatorContent>
 		<s:NavigatorContent width="100%" height="100%" label="Places">
 			<s:Button x="10" y="10" label="Search Places" click="button2_clickHandler(event)"/>
+		</s:NavigatorContent>
+		<s:NavigatorContent width="100%" height="100%" label="Photo Collections">
+			<mx:VBox id="box" x="10" width="704" height="310" maxWidth="600" maxHeight="300"
+					 horizontalAlign="center" verticalGap="0">
+				<containers:CoverFlowContainer id="coverflow" width="100%" height="100%" 
+										   horizontalGap="40" borderStyle="inset" backgroundColor="0x000000"
+										   segments="6" reflectionEnabled="true" creationComplete="initCollectionCoverFlow()">
+					
+				</containers:CoverFlowContainer>
+				<mx:HScrollBar id="scrollbar" width="100%" pageSize="1" maxScrollPosition="{coverflow.numChildren - 1}"
+						   scrollPosition="{coverflow.selectedIndex}" 
+						   scroll="coverflow.selectedIndex = Math.round(scrollbar.scrollPosition)" />
+			</mx:VBox>
+			<s:Panel x="14" y="316" width="311" height="99" title="Create Collection">
+				<s:Label x="10" y="10" height="22" fontWeight="bold" text="Name:"
+						 verticalAlign="middle"/>
+				<s:TextInput id="collectionName" x="50" y="10" width="237"
+							 prompt="&lt;Collection name&gt;"/>
+				<s:Button x="217" y="40" label="Create" click="createCollection()"/>
+			</s:Panel>
+		</s:NavigatorContent>
+		<s:NavigatorContent width="100%" height="100%" label="Key-values">
+			<s:DataGrid id="keyvalueGrid" x="9" y="237" width="704" height="179"
+						creationComplete="refreshDataGrid()" dataProvider="{keyvalueGridData}">
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn width="200" dataField="keyField" headerText="Key"></s:GridColumn>
+						<s:GridColumn width="400" dataField="valueField" headerText="Value"></s:GridColumn>
+						<s:GridColumn dataField="opr" headerText=" "
+									  itemRenderer="com.cocoafish.api.test.components.keyvalues"
+									  resizable="false" sortable="false"></s:GridColumn>
+					</s:ArrayList>
+				</s:columns>
+			</s:DataGrid>
+			<s:Panel x="10" y="10" width="705" height="206" title="Create Key-value">
+				<s:Label x="10" y="10" height="22" fontWeight="bold" text="Key:"
+						 verticalAlign="middle"/>
+				<s:TextInput id="keyText" x="53" y="10" width="640"/>
+				<s:Label x="10" y="40" fontWeight="bold" text="Value:"/>
+				<s:TextArea id="valueText" x="53" y="40" width="641" height="94"/>
+				<s:Button x="623" y="142" label="Add" click="addKeyValuePair()"/>
+			</s:Panel>
 		</s:NavigatorContent>
 	</mx:TabNavigator>
 	<s:Label x="10" y="10" fontSize="20" fontWeight="bold" text="Cocoafish Actionscript SDK Tests"/>
