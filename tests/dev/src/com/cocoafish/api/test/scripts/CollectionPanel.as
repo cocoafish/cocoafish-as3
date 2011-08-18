@@ -1,6 +1,7 @@
 package com.cocoafish.api.test.scripts
 {
 	import com.cocoafish.api.Cocoafish;
+	import com.cocoafish.api.test.scripts.PhotoIcon;
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -9,10 +10,13 @@ package com.cocoafish.api.test.scripts
 	import mx.collections.ArrayCollection;
 	import mx.containers.Panel;
 	import mx.containers.TitleWindow;
+	import mx.containers.VBox;
+	import mx.controls.Alert;
 	import mx.controls.Button;
 	import mx.controls.DataGrid;
 	import mx.controls.Image;
 	import mx.controls.dataGridClasses.DataGridColumn;
+	import mx.core.ClassFactory;
 	import mx.events.CloseEvent;
 	import mx.managers.PopUpManager;
 
@@ -20,22 +24,46 @@ package com.cocoafish.api.test.scripts
 	{
 		private var collectionId:String = null;
 		private var photosArray:ArrayCollection = new ArrayCollection();
-		private var uploadButton:Button = new Button();
+		private var uploadButton:Image = new Image();
+		private var deleteButton:Image = new Image();
+		private var dg:DataGrid = null;
+		
+		private var deletePhotoCallback:Function = null;
+		
 		private var sdk:Cocoafish = null;
-		public function CollectionPanel(collectionId:String, sdk:Cocoafish, uploadCallback:Function)
+		public function CollectionPanel(collectionId:String, sdk:Cocoafish, uploadCallback:Function, deleteCallback:Function, deletePhotoCallback:Function)
 		{
 			super();
 			this.collectionId = collectionId;
 			this.sdk = sdk;
-			uploadButton.label = "+";
+			this.addEventListener(MouseEvent.MOUSE_OVER, function():void{
+				deleteButton.visible = true;
+			});
+			
+			this.addEventListener(MouseEvent.MOUSE_OUT, function():void{
+				deleteButton.visible = false;
+			});
+			
+			uploadButton.source = "com/cocoafish/api/test/images/upload.gif";
+			uploadButton.useHandCursor = true;
+			uploadButton.buttonMode = true;
 			uploadButton.addEventListener(MouseEvent.CLICK, uploadCallback);
+			
+			deleteButton.source = "com/cocoafish/api/test/images/delete.gif";
+			deleteButton.useHandCursor = true;
+			deleteButton.buttonMode = true;
+			deleteButton.visible = false;
+			deleteButton.addEventListener(MouseEvent.CLICK, deleteCallback);
+			
+			this.deletePhotoCallback = deletePhotoCallback;
 		}
 		
 		override protected function createChildren():void
 		{
 			super.createChildren();
 			super.titleBar.addChild(uploadButton);
-			var dg:DataGrid = createPhotoGrid();
+			super.titleBar.addChild(deleteButton);
+			dg = createPhotoGrid();
 			super.addChild(dg);
 			populatePhotos();
 		}
@@ -43,10 +71,17 @@ package com.cocoafish.api.test.scripts
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
-			uploadButton.x = super.titleBar.width - 30;
-			uploadButton.y = 6;
-			uploadButton.width = 24;
-			uploadButton.height = 20;
+			uploadButton.x = super.titleBar.width - 25;
+			uploadButton.y = 9;
+			uploadButton.width = 16;
+			uploadButton.height = 16;
+			uploadButton.toolTip = "Upload photo..."
+			
+			deleteButton.x = super.titleBar.width - 9;
+			deleteButton.y = -5;
+			deleteButton.width = 15;
+			deleteButton.height = 15;
+			deleteButton.toolTip = "Delete collection..."
 		}
 		
 		private function createPhotoGrid():DataGrid {
@@ -56,21 +91,31 @@ package com.cocoafish.api.test.scripts
 			dg.showHeaders = false;
 			dg.doubleClickEnabled = true;
 			dg.addEventListener(MouseEvent.DOUBLE_CLICK, openPhoto);
-			
-			var column:DataGridColumn = new DataGridColumn();
-			column.dataField = "photo";
-			dg.columns.push(column);
-			
-			column = new DataGridColumn();
-			column.dataField = "name";
-			dg.columns.push(column);
-			
-			column = new DataGridColumn();
-			column.dataField = "url";
-			column.visible = false;
-			dg.columns.push(column);
-			
 			dg.dataProvider = photosArray;
+			
+			var cols:Array = new Array();
+			
+			var photo:DataGridColumn = new DataGridColumn();
+			photo.dataField = "photo";
+			photo.itemRenderer = new PhotoIcon();
+			photo.width = 30;
+			cols.push(photo);
+			
+			var name:DataGridColumn = new DataGridColumn();
+			name.dataField = "name";
+			cols.push(name);
+			
+			var url:DataGridColumn = new DataGridColumn();
+			url.dataField = "url";
+			url.visible = false;
+			cols.push(url);
+			
+			var id:DataGridColumn = new DataGridColumn();
+			id.dataField = "id";
+			id.visible = false;
+			cols.push(id);
+			
+			dg.columns = cols;
 			return dg;
 		}
 		
@@ -84,6 +129,8 @@ package com.cocoafish.api.test.scripts
 					var p:Object = new Object();
 					p.name = photo.filename;
 					p.url = photo.urls.original;
+					p.photo = photo.urls.square_75;
+					p.id = photo.id;
 					photosArray.addItem(p);
 				}
 			});
@@ -95,17 +142,48 @@ package com.cocoafish.api.test.scripts
 			var name:String = row.name;
 			var window:TitleWindow = new TitleWindow();
 			window.title = name;
-			window.minHeight = 300;
-			window.minWidth = 400;
+			window.height = 440;
+			window.width = 550;
 			window.showCloseButton = true;
+			window.setStyle("backgroundColor", "#efefef");
+			window.setStyle("horizontalAlign", "center");
 			window.addEventListener(CloseEvent.CLOSE, function(event:CloseEvent):void {
 				PopUpManager.removePopUp(window);
 			});
+			
+			var box:VBox = new VBox();
+			box.height = 360;
+			box.width = 535;
+			box.setStyle("horizontalAlign", "center");
+			box.setStyle("verticalAlign", "middle");
+			box.setStyle("backgroundColor", "#efefef");
 			var img:Image = new Image();
+			img.maxWidth = 490;
+			img.maxHeight = 350;
 			img.source = url;
-			window.addChild(img);
+			box.addChild(img);
+			window.addChild(box);
+			
+			var removeButton:Button = new Button();
+			removeButton.label = "Delete";
+			removeButton.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
+				PopUpManager.removePopUp(window);
+				deletePhotoCallback(row, photosArray);
+			});
+			
+			window.addChild(removeButton);
+			
 			PopUpManager.addPopUp(window, this, true);
 			PopUpManager.centerPopUp(window);
+		}
+		
+		public function getPhotosArray():ArrayCollection {
+			return this.photosArray;
+		}
+		
+		public function refresh():void {
+			photosArray.removeAll();
+			populatePhotos();
 		}
 	}
 }

@@ -18,8 +18,7 @@
 			
 		]]>
 	</fx:Script>
-	<s:Button x="4" y="2" width="67" label="Remove" click="button1_clickHandler(event)"
-			  icon="../../../../assets/delete.png"/>
+	<s:Button x="4" y="2" width="67" label="Remove" click="button1_clickHandler(event)"/>
 	
 	
 	
