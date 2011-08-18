@@ -58,7 +58,7 @@ package com.cocoafish.api.test.scripts
 			deleteButton.visible = false;
 			deleteButton.addEventListener(MouseEvent.CLICK, deleteCallback);
 			
-			switchButton.source = "com/cocoafish/api/test/images/delete.gif";
+			switchButton.source = "com/cocoafish/api/test/images/switch.png";
 			switchButton.useHandCursor = true;
 			switchButton.buttonMode = true;
 			switchButton.addEventListener(MouseEvent.CLICK, function():void{
@@ -157,6 +157,7 @@ package com.cocoafish.api.test.scripts
 			cover.height = this.height - 33;
 			cover.maxWidth = this.width - 2;
 			cover.maxHeight = this.height - 33;
+			cover.maintainAspectRatio = false;
 			cover.scaleContent = true;
 			return cover;
 		}
