@@ -2,6 +2,7 @@ package com.cocoafish.api.test.scripts
 {
 	import com.cocoafish.api.Cocoafish;
 	import com.cocoafish.api.test.scripts.PhotoIcon;
+	import com.hurlant.crypto.symmetric.NullPad;
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -26,7 +27,9 @@ package com.cocoafish.api.test.scripts
 		private var photosArray:ArrayCollection = new ArrayCollection();
 		private var uploadButton:Image = new Image();
 		private var deleteButton:Image = new Image();
+		private var switchButton:Image = new Image();
 		private var dg:DataGrid = null;
+		private var cover:Image = null;
 		
 		private var deletePhotoCallback:Function = null;
 		
@@ -55,6 +58,17 @@ package com.cocoafish.api.test.scripts
 			deleteButton.visible = false;
 			deleteButton.addEventListener(MouseEvent.CLICK, deleteCallback);
 			
+			switchButton.source = "com/cocoafish/api/test/images/delete.gif";
+			switchButton.useHandCursor = true;
+			switchButton.buttonMode = true;
+			switchButton.addEventListener(MouseEvent.CLICK, function():void{
+				dg.visible = !dg.visible;
+				dg.includeInLayout = dg.visible;
+				
+				cover.visible = !cover.visible;
+				cover.includeInLayout = cover.visible;
+			});
+			
 			this.deletePhotoCallback = deletePhotoCallback;
 		}
 		
@@ -63,9 +77,20 @@ package com.cocoafish.api.test.scripts
 			super.createChildren();
 			super.titleBar.addChild(uploadButton);
 			super.titleBar.addChild(deleteButton);
+			super.titleBar.addChild(switchButton);
+			
 			dg = createPhotoGrid();
 			super.addChild(dg);
+			dg.visible = false;
+			dg.includeInLayout = false;
+			cover = createCoverImage();
+			super.addChild(cover);
+			populateCover();
 			populatePhotos();
+			
+			super.setStyle("veritcalAlign", "middle");
+			super.setStyle("horizontalAlign", "center");
+			super.setStyle("backgroundColor", "#efefef");
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
@@ -75,13 +100,19 @@ package com.cocoafish.api.test.scripts
 			uploadButton.y = 9;
 			uploadButton.width = 16;
 			uploadButton.height = 16;
-			uploadButton.toolTip = "Upload photo..."
+			uploadButton.toolTip = "Upload photo...";
 			
 			deleteButton.x = super.titleBar.width - 9;
 			deleteButton.y = -5;
 			deleteButton.width = 15;
 			deleteButton.height = 15;
-			deleteButton.toolTip = "Delete collection..."
+			deleteButton.toolTip = "Delete collection...";
+			
+			switchButton.x = super.titleBar.width - 45;
+			switchButton.y = 9;
+			switchButton.width = 16;
+			switchButton.height = 16;
+			switchButton.toolTip = "Switch..."
 		}
 		
 		private function createPhotoGrid():DataGrid {
@@ -99,6 +130,7 @@ package com.cocoafish.api.test.scripts
 			photo.dataField = "photo";
 			photo.itemRenderer = new PhotoIcon();
 			photo.width = 30;
+			photo.setStyle("horizontalAlign", "center");
 			cols.push(photo);
 			
 			var name:DataGridColumn = new DataGridColumn();
@@ -117,6 +149,26 @@ package com.cocoafish.api.test.scripts
 			
 			dg.columns = cols;
 			return dg;
+		}
+		
+		private function createCoverImage():Image {
+			var cover:Image = new Image();
+			cover.width = this.width - 2;
+			cover.height = this.height - 33;
+			cover.maxWidth = this.width - 2;
+			cover.maxHeight = this.height - 33;
+			cover.scaleContent = true;
+			return cover;
+		}
+		
+		private function populateCover():void {
+			var param:Object = new Object();
+			param.collection_id = collectionId;
+			sdk.sendRequest("collections/show.json", URLRequestMethod.GET, param, false, function(data:Object):void {
+				var collection:Object = data.response.collections[0];
+				var coverPhoto:Object = collection.cover_photo;
+				cover.source = coverPhoto.urls.small_240;
+			});
 		}
 		
 		private function populatePhotos():void {
