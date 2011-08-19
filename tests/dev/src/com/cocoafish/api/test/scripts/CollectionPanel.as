@@ -1,26 +1,24 @@
 package com.cocoafish.api.test.scripts
 {
 	import com.cocoafish.api.Cocoafish;
-	import com.cocoafish.api.test.scripts.PhotoIcon;
-	import com.hurlant.crypto.symmetric.NullPad;
 	
-	import flash.events.Event;
+	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
+	import flash.geom.Matrix;
 	import flash.net.URLRequestMethod;
 	
 	import mx.collections.ArrayCollection;
 	import mx.containers.Panel;
 	import mx.containers.TitleWindow;
 	import mx.containers.VBox;
-	import mx.controls.Alert;
+	import mx.containers.ViewStack;
 	import mx.controls.Button;
 	import mx.controls.DataGrid;
 	import mx.controls.Image;
 	import mx.controls.dataGridClasses.DataGridColumn;
-	import mx.core.ClassFactory;
 	import mx.events.CloseEvent;
 	import mx.managers.PopUpManager;
-
+	
 	public class CollectionPanel extends Panel
 	{
 		private var collectionId:String = null;
@@ -79,12 +77,14 @@ package com.cocoafish.api.test.scripts
 			super.titleBar.addChild(deleteButton);
 			super.titleBar.addChild(switchButton);
 			
-			dg = createPhotoGrid();
-			super.addChild(dg);
-			dg.visible = false;
-			dg.includeInLayout = false;
 			cover = createCoverImage();
 			super.addChild(cover);
+			
+			dg = createPhotoGrid();
+			dg.visible = false;
+			dg.includeInLayout = false;
+			super.addChild(dg);
+			
 			populateCover();
 			populatePhotos();
 			
@@ -168,7 +168,9 @@ package com.cocoafish.api.test.scripts
 			sdk.sendRequest("collections/show.json", URLRequestMethod.GET, param, false, function(data:Object):void {
 				var collection:Object = data.response.collections[0];
 				var coverPhoto:Object = collection.cover_photo;
-				cover.source = coverPhoto.urls.small_240;
+				if(coverPhoto) {
+					cover.source = coverPhoto.urls.small_240;
+				}
 			});
 		}
 		
@@ -181,7 +183,7 @@ package com.cocoafish.api.test.scripts
 					var photo:Object = photos[i];
 					var p:Object = new Object();
 					p.name = photo.filename;
-					p.url = photo.urls.original;
+					p.url = photo.urls.medium_500;//original;
 					p.photo = photo.urls.square_75;
 					p.id = photo.id;
 					photosArray.addItem(p);
@@ -237,6 +239,10 @@ package com.cocoafish.api.test.scripts
 		public function refresh():void {
 			photosArray.removeAll();
 			populatePhotos();
+			if(cover.source == null) {
+				populateCover();
+			}
 		}
+		
 	}
 }
