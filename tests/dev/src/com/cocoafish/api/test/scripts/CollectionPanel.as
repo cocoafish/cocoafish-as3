@@ -3,7 +3,9 @@ package com.cocoafish.api.test.scripts
 	import com.cocoafish.api.Cocoafish;
 	
 	import flash.display.DisplayObject;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.ProgressEvent;
 	import flash.geom.Matrix;
 	import flash.net.URLRequestMethod;
 	
@@ -15,6 +17,7 @@ package com.cocoafish.api.test.scripts
 	import mx.controls.Button;
 	import mx.controls.DataGrid;
 	import mx.controls.Image;
+	import mx.controls.ProgressBar;
 	import mx.controls.dataGridClasses.DataGridColumn;
 	import mx.events.CloseEvent;
 	import mx.managers.PopUpManager;
@@ -77,6 +80,10 @@ package com.cocoafish.api.test.scripts
 			super.titleBar.addChild(deleteButton);
 			super.titleBar.addChild(switchButton);
 			
+			super.setStyle("veritcalAlign", "middle");
+			super.setStyle("horizontalAlign", "center");
+			super.setStyle("backgroundColor", "#efefef");
+			
 			cover = createCoverImage();
 			super.addChild(cover);
 			
@@ -87,10 +94,6 @@ package com.cocoafish.api.test.scripts
 			
 			populateCover();
 			populatePhotos();
-			
-			super.setStyle("veritcalAlign", "middle");
-			super.setStyle("horizontalAlign", "center");
-			super.setStyle("backgroundColor", "#efefef");
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
@@ -153,10 +156,10 @@ package com.cocoafish.api.test.scripts
 		
 		private function createCoverImage():Image {
 			var cover:Image = new Image();
-			cover.width = this.width - 2;
-			cover.height = this.height - 33;
-			cover.maxWidth = this.width - 2;
-			cover.maxHeight = this.height - 33;
+			cover.width = this.width - 10;
+			cover.height = this.height - 37;
+//			cover.maxWidth = this.width - 2;
+//			cover.maxHeight = this.height - 33;
 			cover.maintainAspectRatio = false;
 			cover.scaleContent = true;
 			return cover;
@@ -216,7 +219,28 @@ package com.cocoafish.api.test.scripts
 			img.maxWidth = 490;
 			img.maxHeight = 350;
 			img.source = url;
+			img.visible = false;
+			img.includeInLayout = false;
 			box.addChild(img);
+			
+			var bar:ProgressBar = new ProgressBar();
+			bar.maximum = 100;
+			bar.mode = "manual";
+			bar.labelPlacement = "center";
+			box.addChild(bar);
+			
+			img.addEventListener(Event.COMPLETE, function(event:Event):void {
+				box.removeChild(bar);
+				img.visible = true;
+				img.includeInLayout = true;
+			});
+			
+			img.addEventListener(ProgressEvent.PROGRESS, function(event:ProgressEvent):void {
+				var count:int = int(img.bytesLoaded/img.bytesTotal*10000)/100;
+				bar.setProgress(count,100);
+				bar.label = count + "%";
+			});
+			
 			window.addChild(box);
 			
 			var removeButton:Button = new Button();
