@@ -41,6 +41,10 @@
 					data.photo = photo;
 				}
 				
+				sdk.addProgressListener(function(event:ProgressEvent):void{
+					trace("called! -- loaded:" + event.bytesLoaded + "   ; total:" + event.bytesTotal);
+				});
+				
 				sdk.sendRequest("users/create.json", URLRequestMethod.POST, data, false, function(data:Object):void {
 					hideLoading();
 					if(data) {

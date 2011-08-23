@@ -1,11 +1,11 @@
 package com.cocoafish.api {
 	import com.adobe.serialization.json.JSON;
 	import com.cocoafish.constants.Constants;
-	import com.cocoafish.utils.UploadPostHelper;
 	
+	import flash.events.DataEvent;
 	import flash.events.Event;
-	import flash.events.HTTPStatusEvent;
 	import flash.events.IOErrorEvent;
+	import flash.events.ProgressEvent;
 	import flash.net.FileReference;
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
@@ -13,18 +13,20 @@ package com.cocoafish.api {
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
+	
+	import mx.collections.ArrayList;
 	import mx.utils.URLUtil;
+	
 	import org.iotashan.oauth.IOAuthSignatureMethod;
 	import org.iotashan.oauth.OAuthConsumer;
 	import org.iotashan.oauth.OAuthRequest;
 	import org.iotashan.oauth.OAuthSignatureMethod_HMAC_SHA1;
-	import org.iotashan.oauth.OAuthToken;
-	import org.iotashan.utils.URLEncoding;
 	
 	public class Cocoafish {
 		var appKey:String = null;
 		var sessionId:String = null;
 		var consumer:OAuthConsumer = null;
+		var listeners:ArrayList = null;
 		
 		public function Cocoafish(key:String, oauthSecret:String = "") {
 			if(oauthSecret == "") {
@@ -44,7 +46,7 @@ package com.cocoafish.api {
 			if(appKey != null) {
 				reqURL = baseURL + url + Constants.KEY + appKey;
 				if(this.sessionId != null) {
-					reqURL += "&" + Constants.SESSION_ID + this.sessionId;
+					reqURL += Constants.PARAMETER_DELIMITER + Constants.SESSION_ID + this.sessionId;
 				}
 			} else if(consumer != null) {
 				reqURL = baseURL + url;
@@ -63,8 +65,8 @@ package com.cocoafish.api {
 			if(data == null) {
 				data = new Object();
 			}
-			if(!data.hasOwnProperty("suppress_response_codes")) {
-				data.suppress_response_codes = true;
+			if(!data.hasOwnProperty(Constants.SUPPRESS_RESPONSE_KEY)) {
+				data[Constants.SUPPRESS_RESPONSE_KEY] = true;
 			}
 			
 			var photoRef:FileReference = null;
@@ -97,12 +99,11 @@ package com.cocoafish.api {
 			}
 			
 			request.requestHeaders.push(new URLRequestHeader(Constants.ACCEPT_KEY, Constants.ACCEPT_VALUE));
-			var loader:URLLoader = new URLLoader();
 			
 			if(photoRef != null) {
-				request.requestHeaders.push(new URLRequestHeader(Constants.CONTENT_TYPE_KEY, Constants.CONTENT_TYPE_BINARY_VALUE + UploadPostHelper.getBoundary()));
 				request.requestHeaders.push(new URLRequestHeader(Constants.CACHE_CTRL_KEY, Constants.CACHE_CTRL_VALUE));
 				request.method = URLRequestMethod.POST;
+				/*
 				var fileType:String = photoRef.type;
 				if(fileType == null) {
 					fileType = extractFileType(photoRef.name);	//workaround for Mac issue
@@ -110,35 +111,76 @@ package com.cocoafish.api {
 				if(fileType != null) {
 					fileType = Constants.IMAGE_KEY + "/" + fileType;
 				}
-				request.data = UploadPostHelper.getPostData( photoRef.name, photoRef.data, attrName, fileType, data);
-				loader.dataFormat = URLLoaderDataFormat.BINARY;
+				*/
+				var urlVars:URLVariables = new URLVariables();
+				for(var name:String in data) {
+					urlVars[name] = data[name];
+				}
+				request.data = urlVars;
+				
+				//Request complete
+				photoRef.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, function(event:DataEvent):void{
+					completeCallback(event.data, callback);
+				});
+				
+				//IO Error
+				photoRef.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void {
+					errorCallback(event, callback);
+				});
+				
+				//Register upload progress listeners
+				registerProgressListeners(photoRef);
+				
+				photoRef.upload(request, attrName);
 			} else {
+				var loader:URLLoader = new URLLoader();
 				request.method = httpMethod;
 				if(data != null) {
 					var params:String = getURLParameters(data);
 					if(params != null && params.length > 0) {
 						if(httpMethod == URLRequestMethod.GET) {
-							request.url += "&" + params;
+							request.url += Constants.PARAMETER_DELIMITER + params;
 						} else {
 							request.data = params;
 						}
 					}
 				}
 				loader.dataFormat = URLLoaderDataFormat.TEXT;
+				
+				//Request complete
+				loader.addEventListener(Event.COMPLETE, function():void{
+					completeCallback(loader.data, callback);
+				});
+				
+				//IO Error
+				loader.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void {
+					errorCallback(event, callback);
+				});
+				
+				//send request
+				loader.load(request);
 			}
-			
-			//Request complete
-			loader.addEventListener(Event.COMPLETE, function():void{
-				completeCallback(loader, callback);
-			});
-			
-			//IO Error
-			loader.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void {
-				errorCallback(loader, event, callback);
-			});
-			
-			//send request
-			loader.load(request);
+		}
+		
+		public function addProgressListener(listener:Function):void {
+			if(listeners == null) {
+				listeners = new ArrayList();
+			}
+			listeners.addItem(listener);
+		}
+		
+		public function removeProgressListener(listener:Function):void {
+			if(listeners != null) {
+				listeners.removeItem(listener);
+			}
+		}
+		
+		private function registerProgressListeners(fileRef:FileReference):void {
+			if(listeners != null) {
+				for(var i:int = 0; i< listeners.length; i++) {
+					fileRef.addEventListener(ProgressEvent.PROGRESS, listeners.getItemAt(i) as Function);
+				}
+			}
 		}
 		
 		private function buildOAuthRequest(url:String, method:String, params:Object) : URLRequest {
@@ -149,8 +191,7 @@ package com.cocoafish.api {
 			return request;
 		}
 		
-		private function completeCallback(loader:URLLoader, callback:Function):void {
-			var data:String = loader.data;
+		private function completeCallback(data:String, callback:Function):void {
 			if(data != null) {
 				var json:Object = JSON.decode(data);
 				var sessionId:String = parseSessionId(json);
@@ -164,7 +205,7 @@ package com.cocoafish.api {
 			}
 		}
 		
-		private function errorCallback(loader:Object, event:Event, callback:Function):void {
+		private function errorCallback(event:Event, callback:Function):void {
 			callback(event);
 		}
 		
@@ -185,6 +226,7 @@ package com.cocoafish.api {
 			this.sessionId = sessionId;
 		}
 		
+		/*
 		private function extractFileType(fileName:String):String {
 			var extensionIndex:Number = fileName.lastIndexOf(".");
 			if (extensionIndex == -1) {
@@ -193,9 +235,10 @@ package com.cocoafish.api {
 				return fileName.substr(extensionIndex + 1 ,fileName.length);
 			}
 		}
+		*/
 		
 		private function getURLParameters(data:Object):String {
-			var params:String = URLUtil.objectToString(data, "&");
+			var params:String = URLUtil.objectToString(data, Constants.PARAMETER_DELIMITER);
 			return params;
 		}
 	}
