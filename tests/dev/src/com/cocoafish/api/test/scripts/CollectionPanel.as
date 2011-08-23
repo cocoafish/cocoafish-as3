@@ -10,6 +10,8 @@ package com.cocoafish.api.test.scripts
 	import flash.net.URLRequestMethod;
 	
 	import mx.collections.ArrayCollection;
+	import mx.containers.BoxDirection;
+	import mx.containers.HBox;
 	import mx.containers.Panel;
 	import mx.containers.TitleWindow;
 	import mx.containers.VBox;
@@ -22,6 +24,8 @@ package com.cocoafish.api.test.scripts
 	import mx.events.CloseEvent;
 	import mx.managers.PopUpManager;
 	
+	import spark.components.HGroup;
+	
 	public class CollectionPanel extends Panel
 	{
 		private var collectionId:String = null;
@@ -31,6 +35,8 @@ package com.cocoafish.api.test.scripts
 		private var switchButton:Image = new Image();
 		private var dg:DataGrid = null;
 		private var cover:Image = null;
+		private var photoImg:Image = null;
+		private var currentBox:VBox = null;
 		
 		private var deletePhotoCallback:Function = null;
 		
@@ -200,8 +206,8 @@ package com.cocoafish.api.test.scripts
 			var name:String = row.name;
 			var window:TitleWindow = new TitleWindow();
 			window.title = name;
-			window.height = 440;
-			window.width = 550;
+			window.height = 460;
+			window.width = 560;
 			window.showCloseButton = true;
 			window.setStyle("backgroundColor", "#efefef");
 			window.setStyle("horizontalAlign", "center");
@@ -209,39 +215,65 @@ package com.cocoafish.api.test.scripts
 				PopUpManager.removePopUp(window);
 			});
 			
-			var box:VBox = new VBox();
-			box.height = 360;
-			box.width = 535;
-			box.setStyle("horizontalAlign", "center");
-			box.setStyle("verticalAlign", "middle");
-			box.setStyle("backgroundColor", "#efefef");
-			var img:Image = new Image();
-			img.maxWidth = 490;
-			img.maxHeight = 350;
-			img.source = url;
-			img.visible = false;
-			img.includeInLayout = false;
-			box.addChild(img);
+			currentBox = getPhotoBox(url);
+			window.addChild(currentBox);
 			
-			var bar:ProgressBar = new ProgressBar();
-			bar.maximum = 100;
-			bar.mode = "manual";
-			bar.labelPlacement = "center";
-			box.addChild(bar);
+			var hbox:HBox = new HBox();
 			
-			img.addEventListener(Event.COMPLETE, function(event:Event):void {
-				box.removeChild(bar);
-				img.visible = true;
-				img.includeInLayout = true;
+			var prevButton:Image = new Image();
+			prevButton.source = "com/cocoafish/api/test/images/prev.png";
+			prevButton.useHandCursor = true;
+			prevButton.buttonMode = true;
+			prevButton.width = 20;
+			prevButton.height = 20;
+			prevButton.horizontalCenter = 0;
+			prevButton.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void{
+				if(photosArray != null && photosArray.length > 0) {
+					for(var index:int = 0;index < photosArray.length; index++) {
+						if(index > 0) {
+							var p:Object = photosArray.getItemAt(index);
+							if(p.url == photoImg.source) {
+								window.removeChild(currentBox);
+								currentBox = getPhotoBox(photosArray.getItemAt(index - 1).url);
+								window.addChildAt(currentBox, 0);
+								window.title = photosArray.getItemAt(index - 1).name;
+								row.id = photosArray.getItemAt(index - 1).id;
+								break;
+							}
+						}
+					}
+				}
 			});
 			
-			img.addEventListener(ProgressEvent.PROGRESS, function(event:ProgressEvent):void {
-				var count:int = int(img.bytesLoaded/img.bytesTotal*10000)/100;
-				bar.setProgress(count,100);
-				bar.label = count + "%";
+			var nextButton:Image = new Image();
+			nextButton.source = "com/cocoafish/api/test/images/next.png";
+			nextButton.useHandCursor = true;
+			nextButton.buttonMode = true;
+			nextButton.width = 20;
+			nextButton.height = 20;
+			nextButton.horizontalCenter = 0;
+			nextButton.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void{
+				if(photosArray != null && photosArray.length > 0) {
+					for(var index:int = 0;index < photosArray.length; index++) {
+						if(index < photosArray.length - 1) {
+							var p:Object = photosArray.getItemAt(index);
+							if(p.url == photoImg.source) {
+								window.removeChild(currentBox);
+								currentBox = getPhotoBox(photosArray.getItemAt(index + 1).url);
+								window.addChildAt(currentBox, 0);
+								window.title = photosArray.getItemAt(index + 1).name;
+								row.id = photosArray.getItemAt(index + 1).id;
+								break;
+							}
+						}
+					}
+				}
 			});
 			
-			window.addChild(box);
+			hbox.addChild(prevButton);
+			hbox.addChild(nextButton);
+			
+			window.addChild(hbox);
 			
 			var removeButton:Button = new Button();
 			removeButton.label = "Delete";
@@ -254,6 +286,41 @@ package com.cocoafish.api.test.scripts
 			
 			PopUpManager.addPopUp(window, this, true);
 			PopUpManager.centerPopUp(window);
+		}
+		
+		private function getPhotoBox(url:String):VBox {
+			var box:VBox = new VBox();
+			box.height = 350;
+			box.width = 535;
+			box.setStyle("horizontalAlign", "center");
+			box.setStyle("verticalAlign", "middle");
+			box.setStyle("backgroundColor", "#efefef");
+			photoImg = new Image();
+			photoImg.maxWidth = 490;
+			photoImg.maxHeight = 350;
+			photoImg.source = url;
+			photoImg.visible = false;
+			photoImg.includeInLayout = false;
+			box.addChild(photoImg);
+			
+			var bar:ProgressBar = new ProgressBar();
+			bar.maximum = 100;
+			bar.mode = "manual";
+			bar.labelPlacement = "center";
+			box.addChild(bar);
+			
+			photoImg.addEventListener(Event.COMPLETE, function(event:Event):void {
+				box.removeChild(bar);
+				photoImg.visible = true;
+				photoImg.includeInLayout = true;
+			});
+			
+			photoImg.addEventListener(ProgressEvent.PROGRESS, function(event:ProgressEvent):void {
+				var count:int = int(photoImg.bytesLoaded/photoImg.bytesTotal*10000)/100;
+				bar.setProgress(count,100);
+				bar.label = count + "%";
+			});
+			return box;
 		}
 		
 		public function getPhotosArray():ArrayCollection {
