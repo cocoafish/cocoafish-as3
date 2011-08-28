@@ -1,6 +1,6 @@
 # Cocoafish ActionScript 3 Library
 
-This is a Flex wrapper for the Cocoafish REST API that can be used in your Flash and Air apps. For full documentation about the API methods that can be used through this library, see the [Cocoafish REST API documentation](http://cocoafish.com/docs/rest). This has been developed and tested with Flash Builder 4.5, and is known to work on both Mac and Windows. Earlier versions of Flash Build may not work.
+This is a Flex wrapper for the Cocoafish REST API that can be used in your Flash and Air apps. For full documentation about the API methods that can be used through this library, see the [Cocoafish REST API documentation](http://cocoafish.com/docs/rest). This has been developed and tested with Flash Builder 4.5, and is known to work on both Mac and Windows. Earlier versions of Flash Builder may not work.
 
 ## Setup
 
