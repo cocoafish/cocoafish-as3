@@ -1,6 +1,6 @@
 # Cocoafish ActionScript 3 Library
 
-This is a Flex wrapper for the Cocoafish REST API that can be used in your Flash and Air apps. For full documentation about the API methods that can be used through this library, see the [Cocoafish REST API documentation](http://cocoafish.com/docs/rest).
+This is a Flex wrapper for the Cocoafish REST API that can be used in your Flash and Air apps. For full documentation about the API methods that can be used through this library, see the [Cocoafish REST API documentation](http://cocoafish.com/docs/rest). This has been developed and tested with Flash Builder 4.5, and is known to work on both Mac and Windows. Earlier versions of Flash Builder may not work.
 
 ## Setup
 
@@ -107,13 +107,10 @@ The `tests/dev` folder contains a [sample Flash app](https://github.com/cocoafis
 3. Click Browse and select the tests/dev folder in the cocoafish-as3 project code downloaded from Github
 4. Click Finish
 
-You must then edit the Properties of the cocoafish-as3-test project to change the Flex Source Build path to reflect the absolute path on your system to the `cocoafish-as3/src` folder:
+Then build and run it:
 
-1. Right click on cocoafish-as3-test in Package Explorer and select Properties
-2. Select Flex Build Path
-3. Click on the Source Path tab
-4. Select the existing "/Users/apple/work/git/cocoafish-as3/src" entry, select Edit and change it to the corresponding absolute path on your system
-5. Select the existing "/Users/apple/work/git/cocoafish-as3/oauth/src" entry, select Edit and change it to the corresponding absolute path on your system
-6. Click OK to exit the Properties editor
+1. Select the cocoafish-as3-test project in the Package Explorer and click Run Main from the Flash Builder toolbar to run the sample app in your browser
+2. Enter the OAuth consumer key and secret from your registered Cocoafish app
+3. Use the demo to create users, upload photos, and more!
 
 After doing this configuration, you'll be able to make changes and rebuild the test app.
