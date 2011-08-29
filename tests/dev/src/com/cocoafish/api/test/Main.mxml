@@ -3,8 +3,10 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark"
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   width="100%" minWidth="955" minHeight="600" 
-			   applicationComplete="updateForm()"
-			   xmlns:containers="com.dougmccune.containers.*">
+			   applicationComplete="updateForm()" 
+			   creationComplete="init()" 
+			   xmlns:containers="com.dougmccune.containers.*"
+			   xmlns:components="com.cocoafish.api.test.components.*">
 	<fx:Script source="scripts/collections.as"/>
 	<fx:Script source="scripts/common.as"/>
 	<fx:Script source="scripts/keyvalues.as"/>
@@ -21,6 +23,38 @@
 			private var photo:FileReference;
 			private var isPhotoLoaded:Boolean = false;
 			var waitingpopup:TitleWindow;
+			
+			private var login:LoginComponent = new LoginComponent();
+			public function init():void
+			{
+				login.addEventListener("Success", loginSuccess);
+				login.addEventListener("Failed", loginFail);
+				PopUpManager.addPopUp(login.loginWindow, this, true);
+				PopUpManager.centerPopUp(login.loginWindow);
+			}
+			
+			public function loginSuccess(event:Event):void
+			{
+				if(login.oauth.selected) {
+					oauth.selected = true;
+					appKey.selected = false;
+				}
+				if(login.appKey.selected) {
+					oauth.selected = false;
+					appKey.selected = true;
+				}
+				appKeyTextField.text = login.appKeyTextField.text;
+				oauthKeyTextField.text = login.oauthKeyTextField.text;
+				oauthSecretTextField.text = login.oauthSecretTextField.text;
+				updateForm();
+				
+				Alert.show("User login succeed!");
+			}
+			
+			public function loginFail(event:Event):void
+			{
+				Alert.show("User login failed!");
+			}
 			
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
@@ -121,7 +155,7 @@
 				}
 			}
 			
-			protected function showLoading():void {
+			public function showLoading():void {
 				if(waitingpopup == null) {
 					waitingpopup = new TitleWindow();
 					waitingpopup.title = "Please Wait";
@@ -134,7 +168,7 @@
 				PopUpManager.centerPopUp(waitingpopup);
 			}
 			
-			protected function hideLoading():void {
+			public function hideLoading():void {
 				PopUpManager.removePopUp(waitingpopup);
 			}
 			
@@ -214,7 +248,7 @@
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="radiogroup1"/>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<components:LoginComponent visible="false" horizontalCenter="-343" verticalCenter="-115"/>
 	</fx:Declarations>
 	<mx:TabNavigator x="11" y="126" width="726" height="459">
 		<s:NavigatorContent width="100%" height="100%" label="Users">
@@ -222,9 +256,9 @@
 					 skinClass="spark.skins.spark.PanelSkin" title="Create User">
 				<s:Label x="10" y="10" text="First Name:"/>
 				<s:Label x="10" y="10" text="First Name:"/>
-				<s:TextInput id="firstNameTextField" x="124" y="4" width="258" text="Bill"/>
-				<s:TextInput id="lastNameTextField" x="124" y="34" width="258" text="Wang"/>
-				<s:TextInput id="emailTextField" x="124" y="64" width="258" text="bill@cocoafish.com"/>
+				<s:TextInput id="firstNameTextField" x="124" y="4" width="258"/>
+				<s:TextInput id="lastNameTextField" x="124" y="34" width="258"/>
+				<s:TextInput id="emailTextField" x="124" y="64" width="258"/>
 				<s:TextInput id="passwdTextField" x="124" y="94" width="258" displayAsPassword="true"/>
 				<s:TextInput id="passwdConfirmTextField" x="124" y="124" width="258" displayAsPassword="true"/>
 				<s:Label x="10" y="71" height="15" text="Email:"/>
@@ -244,9 +278,9 @@
 				<s:Button x="311" y="60" label="Login" click="button3_clickHandler(event)"/>
 				<s:Label x="10" y="10" text="Login:"/>
 				<s:Label x="10" y="40" text="Password:"/>
-				<s:TextInput id="loginTextField" x="94" y="4" width="287" text="bill@cocoafish.com"/>
+				<s:TextInput id="loginTextField" x="94" y="4" width="287"/>
 				<s:TextInput id="loginPasswdTextField" x="94" y="34" width="287"
-							 displayAsPassword="true" text="111111"/>
+							 displayAsPassword="true"/>
 			</s:Panel>
 			<s:Panel x="411" y="284" width="303" height="124">
 				<s:Button x="18" y="10" width="89" height="26" label="Logout"
@@ -307,12 +341,11 @@
 		<s:RadioButton id="oauth" label="OAuth" click="oauth_clickHandler(event)" enabled="true"
 					   groupName="radiogroup1" selected="true"/>
 	</s:VGroup>
-	<s:TextInput id="appKeyTextField" x="99" y="37" width="514"
-				 text="fNEQf2q7T4pQIuJTT4aRvoaHFhuiVP77"/>
+	<s:TextInput id="appKeyTextField" x="99" y="37" width="514" prompt="&lt;app key&gt;"/>
 	<s:TextInput id="oauthKeyTextField" x="145" y="62" width="468" enabled="false"
-				 text="2dnrrXXeypfyLDHFbOw550BTpHEx8sED"/>
+				 prompt="&lt;oauth key&gt;"/>
 	<s:TextInput id="oauthSecretTextField" x="146" y="87" width="467" enabled="false"
-				 text="SnUpTiNiqQHujRY98K5rfTuo6CpsMjFC"/>
+				 prompt="&lt;oauth secret&gt;"/>
 	<s:Label x="99" y="93" text="Secret:"/>
 	<s:Label x="99" y="67" text="Key:"/>
 </s:Application>

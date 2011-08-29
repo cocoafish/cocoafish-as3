@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="402" height="224" creationComplete="updateLogin()">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.cocoafish.api.test.scripts.SessionHelper;
+			
+			import com.cocoafish.api.Cocoafish;
+			
+			import mx.managers.PopUpManager;
+			protected function loginUser(event:MouseEvent):void
+			{
+				var user:String = userName.text;
+				var passwd:String = password.text;
+				
+				var data:Object = new Object();
+				data.login = user;
+				data.password = passwd;
+				
+				var sdk:Cocoafish = null;
+				if(appKey.selected) {
+					sdk = new Cocoafish(appKeyTextField.text);
+				}
+				if(oauth.selected) {
+					sdk = new Cocoafish(oauthKeyTextField.text, oauthSecretTextField.text);
+				}
+				sdk.sendRequest("users/login.json", URLRequestMethod.POST, data, false, function(data:Object):void 
+				{
+					if(data && data.hasOwnProperty("meta")) 
+					{
+						if(data.meta.code == 200 && data.meta.status == "ok" && data.meta.method_name == "loginUser")
+						{
+							var user:Object = data.response.users[0];
+							var id:String = user.id;
+							SessionHelper.getInstance().setUserId(id);
+							PopUpManager.removePopUp(loginWindow);
+							sendEvent("Success");
+							return;
+						}
+					}
+					sendEvent("Failed");
+				});
+			}
+			
+			protected function sendEvent(type:String):void
+			{
+				this.dispatchEvent(new Event(type));
+			}
+			
+			protected function updateLogin():void {
+				if(appKey.selected) {
+					appKeyTextField.enabled = true;
+					oauthKeyTextField.enabled = false;
+					oauthSecretTextField.enabled = false;
+				}
+				if(oauth.selected) {
+					appKeyTextField.enabled = false;
+					oauthKeyTextField.enabled = true;
+					oauthSecretTextField.enabled = true;
+				}
+			}
+			
+			protected function appKey_clickHandler(event:MouseEvent):void
+			{
+				updateLogin();				
+			}
+			
+			protected function oauth_clickHandler(event:MouseEvent):void
+			{
+				updateLogin();
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Panel id="loginWindow" x="0" y="0" width="400" height="223" title="Login">
+		<s:Label x="10" y="96" height="22" fontWeight="bold" text="User name:" verticalAlign="middle"/>
+		<s:Label x="10" y="126" height="22" fontWeight="bold" text="Password:" verticalAlign="middle"/>
+		<s:TextInput id="userName" x="84" y="96" width="304" prompt="&lt;user name&gt;"/>
+		<s:TextInput id="password" x="84" y="126" width="304" prompt="&lt;password&gt;" displayAsPassword="true"/>
+		<s:Button x="318" y="156" label="Login" click="loginUser(event)" fontWeight="bold"/>
+		
+		<s:VGroup x="10" y="10" width="84" height="52">
+			<s:RadioButton id="appKey" label="App. Key" click="appKey_clickHandler(event)"
+						   groupName="radiogroup1" selected="false"/>
+			<s:RadioButton id="oauth" label="OAuth" click="oauth_clickHandler(event)" enabled="true"
+						   groupName="radiogroup1" selected="true"/>
+		</s:VGroup>
+		<s:TextInput id="appKeyTextField" x="99" y="10" width="289" enabled="false"
+					 prompt="&lt;app key&gt;"/>
+		<s:TextInput id="oauthKeyTextField" x="145" y="36" width="243" enabled="true"
+					 prompt="&lt;oauth key&gt;"/>
+		<s:TextInput id="oauthSecretTextField" x="145" y="62" width="243" enabled="true"
+					 prompt="&lt;oauth secret&gt;"/>
+		<s:Label x="98" y="66" text="Secret:"/>
+		<s:Label x="99" y="41" text="Key:"/>
+	</s:Panel>
+</s:Group>

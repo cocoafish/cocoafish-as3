@@ -1,5 +1,6 @@
 import com.cocoafish.api.Cocoafish;
 import com.cocoafish.api.test.scripts.CollectionPanel;
+import com.cocoafish.api.test.scripts.SessionHelper;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
@@ -21,7 +22,7 @@ var panelMap:Object = new Object();
 protected function initCollectionCoverFlow():void {
 	var sdk:Cocoafish = getSDK();
 	var param:Object = new Object();
-	param.user_id = "4e4b606f6f709545b6000076";
+	param.user_id = SessionHelper.getInstance().getUserId();//"4e4b606f6f709545b6000076";
 	sdk.sendRequest("collections/search.json", URLRequestMethod.GET, param, false, function(data:Object):void {
 		hideLoading();
 		var collections:Array = data.response.collections;
