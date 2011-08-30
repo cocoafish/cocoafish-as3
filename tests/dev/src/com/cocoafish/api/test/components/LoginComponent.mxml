@@ -5,9 +5,9 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.cocoafish.api.test.scripts.SessionHelper;
-			
 			import com.cocoafish.api.Cocoafish;
+			import com.cocoafish.api.test.scripts.SessionHelper;
+			import com.cocoafish.api.test.scripts.SDKHelper;
 			
 			import mx.managers.PopUpManager;
 			protected function loginUser(event:MouseEvent):void
@@ -21,10 +21,10 @@
 				
 				var sdk:Cocoafish = null;
 				if(appKey.selected) {
-					sdk = new Cocoafish(appKeyTextField.text);
+					sdk = SDKHelper.getInstance().getSDK(appKeyTextField.text);
 				}
 				if(oauth.selected) {
-					sdk = new Cocoafish(oauthKeyTextField.text, oauthSecretTextField.text);
+					sdk = SDKHelper.getInstance().getSDK(oauthKeyTextField.text, oauthSecretTextField.text);
 				}
 				sdk.sendRequest("users/login.json", URLRequestMethod.POST, data, false, function(data:Object):void 
 				{

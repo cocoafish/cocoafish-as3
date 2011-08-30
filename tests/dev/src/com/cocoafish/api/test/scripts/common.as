@@ -1,12 +1,16 @@
 import com.cocoafish.api.Cocoafish;
+import com.cocoafish.api.test.scripts.SDKHelper;
+
+public var sdk:Cocoafish = null;
 
 protected function getSDK():Cocoafish {
-	var sdk:Cocoafish = null;
-	if(appKey.selected) {
-		sdk = new Cocoafish(appKeyTextField.text);
-	}
-	if(oauth.selected) {
-		sdk = new Cocoafish(oauthKeyTextField.text, oauthSecretTextField.text);
+	if(sdk == null) {
+		if(appKey.selected) {
+			sdk = SDKHelper.getInstance().getSDK(appKeyTextField.text);
+		}
+		if(oauth.selected) {
+			sdk = SDKHelper.getInstance().getSDK(oauthKeyTextField.text, oauthSecretTextField.text);
+		}
 	}
 	return sdk;
 }

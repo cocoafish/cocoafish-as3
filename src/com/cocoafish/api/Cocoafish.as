@@ -45,9 +45,6 @@ package com.cocoafish.api {
 			var reqURL:String = null;
 			if(appKey != null) {
 				reqURL = baseURL + url + Constants.KEY + appKey;
-				if(this.sessionId != null) {
-					reqURL += Constants.PARAMETER_DELIMITER + Constants.SESSION_ID + this.sessionId;
-				}
 			} else if(consumer != null) {
 				reqURL = baseURL + url;
 			}
@@ -87,6 +84,10 @@ package com.cocoafish.api {
 			
 			var request:URLRequest = null;
 			if(appKey != null) {
+				//append session id
+				if(this.sessionId != null) {
+					reqURL += Constants.PARAMETER_DELIMITER + Constants.SESSION_ID + Constants.PARAMETER_EQUAL + this.sessionId;
+				}
 				request = new URLRequest(reqURL);
 			} else if(consumer != null) {
 				if(photoRef != null) {
@@ -103,6 +104,12 @@ package com.cocoafish.api {
 			if(photoRef != null) {
 				request.requestHeaders.push(new URLRequestHeader(Constants.CACHE_CTRL_KEY, Constants.CACHE_CTRL_VALUE));
 				request.method = URLRequestMethod.POST;
+				//append session id
+				if(this.sessionId != null) {
+					if(request.url.indexOf(Constants.SESSION_ID) == -1) {
+						request.url += Constants.PARAMETER_DELIMITER + Constants.SESSION_ID + Constants.PARAMETER_EQUAL + this.sessionId;
+					}
+				}
 				/*
 				var fileType:String = photoRef.type;
 				if(fileType == null) {
@@ -184,6 +191,14 @@ package com.cocoafish.api {
 		}
 		
 		private function buildOAuthRequest(url:String, method:String, params:Object) : URLRequest {
+			//append session id
+			if(this.sessionId != null) {
+				if(params == null) {
+					params = new Object();
+				}
+				params[Constants.SESSION_ID] = this.sessionId;
+			}
+			
 			var oauthRequest:OAuthRequest = new OAuthRequest(method, url, params, consumer, null);
 			var signatureMethod:IOAuthSignatureMethod = new OAuthSignatureMethod_HMAC_SHA1();
 			var oauthURL:String = oauthRequest.buildRequest(signatureMethod, OAuthRequest.RESULT_TYPE_URL_STRING);

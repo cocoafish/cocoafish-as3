@@ -99,11 +99,16 @@ protected function colPhotoLoaded(event:Event):void {
 	param.file = collectionPhoto;
 	sdk.sendRequest("photos/create.json", URLRequestMethod.POST, param, false, function(data:Object):void {
 		//var photo:Object = data.response.photos[0];
-		var panel:CollectionPanel = panelMap[collectionId];
-		flash.utils.setTimeout(function():void {
-			panel.refresh();
+		if(data.meta.code == 200) {
+			var panel:CollectionPanel = panelMap[collectionId];
+			flash.utils.setTimeout(function():void {
+				panel.refresh();
+				hideLoading();
+			}, 10000, null);
+		} else {
 			hideLoading();
-		}, 5000, null);
+			Alert.show(data.meta.message, "Failed");
+		}
 	});
 }
 

@@ -4,7 +4,7 @@ package com.cocoafish.constants {
 		public static var BASE_URL:String = "http://api.cocoafish.com/v1/";
 		public static var BASE_URL_SECURE:String = "https://api.cocoafish.com/v1/";
 		public static var KEY:String = "?key=";
-		public static var SESSION_ID:String = "_session_id=";
+		public static var SESSION_ID:String = "_session_id";
 		
 		//Parameters
 		public static var PHOTO_KEY:String = "photo";
@@ -22,5 +22,6 @@ package com.cocoafish.constants {
 		
 		//Others
 		public static var PARAMETER_DELIMITER:String = "&";
+		public static var PARAMETER_EQUAL:String = "=";
 	}
 }

@@ -164,8 +164,6 @@ package com.cocoafish.api.test.scripts
 			var cover:Image = new Image();
 			cover.width = this.width - 10;
 			cover.height = this.height - 37;
-//			cover.maxWidth = this.width - 2;
-//			cover.maxHeight = this.height - 33;
 			cover.maintainAspectRatio = false;
 			cover.scaleContent = true;
 			return cover;
