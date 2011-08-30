@@ -77,7 +77,7 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<s:Panel id="loginWindow" x="0" y="0" width="400" height="223" title="Login">
+	<s:TitleWindow id="loginWindow" x="0" y="0" width="400" height="223" title="Login" creationComplete="{loginWindow.closeButton.visible = false}">
 		<s:Label x="10" y="96" height="22" fontWeight="bold" text="User name:" verticalAlign="middle"/>
 		<s:Label x="10" y="126" height="22" fontWeight="bold" text="Password:" verticalAlign="middle"/>
 		<s:TextInput id="userName" x="84" y="96" width="304" prompt="&lt;user name&gt;"/>
@@ -98,5 +98,5 @@
 					 prompt="&lt;oauth secret&gt;"/>
 		<s:Label x="98" y="66" text="Secret:"/>
 		<s:Label x="99" y="41" text="Key:"/>
-	</s:Panel>
+	</s:TitleWindow>
 </s:Group>
