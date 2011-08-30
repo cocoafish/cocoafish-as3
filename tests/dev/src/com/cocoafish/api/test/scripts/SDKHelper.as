@@ -35,5 +35,9 @@ package com.cocoafish.api.test.scripts
 			}
 			return sdk;
 		}
+		
+		public function resetSDK():void {
+			sdk == null;
+		}
 	}
 }

@@ -4,7 +4,6 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   width="100%" minWidth="955" minHeight="600" 
 			   applicationComplete="updateForm()" 
-			   creationComplete="init()" 
 			   xmlns:containers="com.dougmccune.containers.*"
 			   xmlns:components="com.cocoafish.api.test.components.*">
 	<fx:Script source="scripts/collections.as"/>
@@ -24,47 +23,41 @@
 			private var isPhotoLoaded:Boolean = false;
 			var waitingpopup:TitleWindow;
 			
-			private var login:LoginComponent = new LoginComponent();
-			public function init():void
-			{
-				login.addEventListener("Success", loginSuccess);
-				login.addEventListener("Failed", loginFail);
-				PopUpManager.addPopUp(login.loginWindow, this, true);
-				PopUpManager.centerPopUp(login.loginWindow);
-			}
+//			private var login:LoginComponent = new LoginComponent();
+//			public function init():void
+//			{
+//				login.addEventListener("Success", loginSuccess);
+//				login.addEventListener("Failed", loginFail);
+//				PopUpManager.addPopUp(login.loginWindow, this, true);
+//				PopUpManager.centerPopUp(login.loginWindow);
+//			}
 			
-			public function loginSuccess(event:Event):void
-			{
-				if(login.oauth.selected) {
-					oauth.selected = true;
-					appKey.selected = false;
-				}
-				if(login.appKey.selected) {
-					oauth.selected = false;
-					appKey.selected = true;
-				}
-				appKeyTextField.text = login.appKeyTextField.text;
-				oauthKeyTextField.text = login.oauthKeyTextField.text;
-				oauthSecretTextField.text = login.oauthSecretTextField.text;
-				updateForm();
-				
-				Alert.show("User login succeed!");
-			}
-			
-			public function loginFail(event:Event):void
-			{
-				Alert.show("User login failed!");
-			}
+//			public function loginSuccess(event:Event):void
+//			{
+//				if(login.oauth.selected) {
+//					oauth.selected = true;
+//					appKey.selected = false;
+//				}
+//				if(login.appKey.selected) {
+//					oauth.selected = false;
+//					appKey.selected = true;
+//				}
+//				appKeyTextField.text = login.appKeyTextField.text;
+//				oauthKeyTextField.text = login.oauthKeyTextField.text;
+//				oauthSecretTextField.text = login.oauthSecretTextField.text;
+//				updateForm();
+//				
+//				Alert.show("User login succeed!");
+//			}
+//			
+//			public function loginFail(event:Event):void
+//			{
+//				Alert.show("User login failed!");
+//			}
 			
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
-				var sdk:Cocoafish = null;
-				if(appKey.selected) {
-					sdk = new Cocoafish(appKeyTextField.text);
-				}
-				if(oauth.selected) {
-					sdk = new Cocoafish(oauthKeyTextField.text, oauthSecretTextField.text);
-				}
+				var sdk:Cocoafish = getSDK();
 				var data:Object = new Object();
 				data.email = emailTextField.text;
 				data.first_name = firstNameTextField.text;
@@ -93,6 +86,22 @@
 								message += "last name:" + user.last_name + "\n";
 								message += "email:" + user.email + "\n";
 								Alert.show(message);
+								
+								welcomePanel.visible = true;
+								loginPanel.visible = false;
+								createPanel.visible = false;
+								placesTab.enabled = true;
+								photoTab.enabled = true;
+								keyvalueTab.enabled = true;
+								
+								SessionHelper.getInstance().setUserId(user.id);
+								nameLabel.text = user.first_name + " " + user.last_name;
+								emailLabel.text = user.email;
+								loginLabel.text = user.updated_at;
+								createLabel.text = user.created_at;
+								
+								updateSDKOptions(false);
+								return;
 							} else {
 								var message:String = "Create user failed.\n\n";
 								message += "Code:" + meta.code + "\n";
@@ -153,6 +162,10 @@
 					oauthKeyTextField.enabled = true;
 					oauthSecretTextField.enabled = true;
 				}
+				
+				appKeyV.validate();
+				oauthKeyV.validate();
+				oauthSecV.validate();
 			}
 			
 			public function showLoading():void {
@@ -174,23 +187,21 @@
 			
 			protected function appKey_clickHandler(event:MouseEvent):void
 			{
-				updateForm();				
+				updateForm();
+				sdk = null;
+				SDKHelper.getInstance().resetSDK();
 			}
 			
 			protected function oauth_clickHandler(event:MouseEvent):void
 			{
 				updateForm();
+				sdk = null;
+				SDKHelper.getInstance().resetSDK();
 			}
 			
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
-				var sdk:Cocoafish = null;
-				if(appKey.selected) {
-					sdk = new Cocoafish(appKeyTextField.text);
-				}
-				if(oauth.selected) {
-					sdk = new Cocoafish(oauthKeyTextField.text, oauthSecretTextField.text);
-				}
+				var sdk:Cocoafish = getSDK();
 				var param:Object = new Object();
 				param.per_page = "20";
 				sdk.sendRequest("places/search.json", URLRequestMethod.GET, param, false, function(data:Object):void {
@@ -204,55 +215,92 @@
 			
 			protected function button3_clickHandler(event:MouseEvent):void
 			{
-				var sdk:Cocoafish = null;
-				if(appKey.selected) {
-					sdk = new Cocoafish(appKeyTextField.text);
-				}
-				if(oauth.selected) {
-					sdk = new Cocoafish(oauthKeyTextField.text, oauthSecretTextField.text);
-				}
+				var sdk:Cocoafish = getSDK();
 				var data:Object = new Object();
 				data.login = loginTextField.text;
 				data.password = loginPasswdTextField.text;
 				
 				sdk.sendRequest("users/login.json", URLRequestMethod.POST, data, false, function(data:Object):void {
 					hideLoading();
-					var result:String = JSON.encode(data);
-					trace(result);
-					Alert.show(result);
+					if(data && data.hasOwnProperty("meta")) 
+					{
+						if(data.meta.code == 200 && data.meta.status == "ok" && data.meta.method_name == "loginUser")
+						{
+							welcomePanel.visible = true;
+							loginPanel.visible = false;
+							createPanel.visible = false;
+							placesTab.enabled = true;
+							photoTab.enabled = true;
+							keyvalueTab.enabled = true;
+							
+							var user:Object = data.response.users[0];
+							SessionHelper.getInstance().setUserId(user.id);
+							nameLabel.text = user.first_name + " " + user.last_name;
+							emailLabel.text = user.email;
+							loginLabel.text = user.updated_at;
+							createLabel.text = user.created_at;
+							
+							updateSDKOptions(false);
+							return;
+						}
+					}
+					Alert.show(data.meta.message, "Login Failed");
 				});
 				showLoading();
 			}
 			
 			protected function button4_clickHandler(event:MouseEvent):void
 			{
-				var sdk:Cocoafish = null;
-				if(appKey.selected) {
-					sdk = new Cocoafish(appKeyTextField.text);
-				}
-				if(oauth.selected) {
-					sdk = new Cocoafish(oauthKeyTextField.text, oauthSecretTextField.text);
-				}
+				var sdk:Cocoafish = getSDK();
 				
 				sdk.sendRequest("users/logout.json", URLRequestMethod.GET, null, false, function(data:Object):void {
 					hideLoading();
-					var result:String = JSON.encode(data);
-					trace(result);
-					Alert.show(result);
+					
+					loginTextField.text = "";
+					loginPasswdTextField.text = "";
+					firstNameTextField.text = "";
+					lastNameTextField.text = "";
+					emailTextField.text = "";
+					passwdTextField.text = "";
+					passwdConfirmTextField.text = "";
+					photoTextField.text = "";
+					photoRadio.selected = false;
+					photoTextField.enabled = false;
+					browseButton.enabled = false;
+					
+					welcomePanel.visible = false;
+					loginPanel.visible = true;
+					createPanel.visible = true;
+					placesTab.enabled = false;
+					photoTab.enabled = false;
+					keyvalueTab.enabled = false;
+					SessionHelper.getInstance().setUserId("");
+					updateSDKOptions(true);
+					return;
 				});
 				showLoading();
 			}
 			
+			protected function updateSDKOptions(isEnable:Boolean):void {
+				appKey.enabled = isEnable;
+				oauth.enabled = isEnable;
+				appKeyTextField.enabled = isEnable;
+				oauthKeyTextField.enabled = isEnable;
+				oauthSecretTextField.enabled = isEnable;
+			}
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="radiogroup1"/>
-		<components:LoginComponent visible="false" horizontalCenter="-343" verticalCenter="-115"/>
+		<mx:Validator id="appKeyV" source="{appKeyTextField}" property="text"  requiredFieldError="App. key is required"/>
+		<mx:Validator id="oauthKeyV" source="{oauthKeyTextField}" property="text"  requiredFieldError="OAuth key is required"/>
+		<mx:Validator id="oauthSecV" source="{oauthSecretTextField}" property="text"  requiredFieldError="OAuth secret is required"/>
+		<!--<components:LoginComponent visible="false" horizontalCenter="-343" verticalCenter="-115"/>-->
 	</fx:Declarations>
 	<mx:TabNavigator x="11" y="126" width="726" height="459">
 		<s:NavigatorContent width="100%" height="100%" label="Users">
-			<s:Panel x="10" y="10" width="394" height="255"
+			<s:Panel id="createPanel" x="9" y="160" width="394" height="255"
 					 skinClass="spark.skins.spark.PanelSkin" title="Create User">
 				<s:Label x="10" y="10" text="First Name:"/>
 				<s:Label x="10" y="10" text="First Name:"/>
@@ -274,7 +322,7 @@
 				<s:Button id="sendBtn" x="279" y="189" width="103" label="Create User"
 						  click="button1_clickHandler(event)" enabled="true"/>
 			</s:Panel>
-			<s:Panel x="10" y="284" width="393" height="124" title="Login User">
+			<s:Panel id="loginPanel" x="11" y="10" width="393" height="124" title="Login User">
 				<s:Button x="311" y="60" label="Login" click="button3_clickHandler(event)"/>
 				<s:Label x="10" y="10" text="Login:"/>
 				<s:Label x="10" y="40" text="Password:"/>
@@ -282,16 +330,23 @@
 				<s:TextInput id="loginPasswdTextField" x="94" y="34" width="287"
 							 displayAsPassword="true"/>
 			</s:Panel>
-			<s:Panel x="411" y="284" width="303" height="124">
-				<s:Button x="18" y="10" width="89" height="26" label="Logout"
+			<s:Panel id="welcomePanel" x="11" y="10" width="391" height="164" title="Welcome!" visible="false">
+				<s:Button x="289" y="90" width="89" height="26" label="Logout"
 						  click="button4_clickHandler(event)"/>
-				<s:Button x="18" y="44" width="89" height="24" label="Delete"/>
+				<s:Label x="10" y="10" text="Name:"/>
+				<s:Label x="10" y="30" text="Email:"/>
+				<s:Label x="10" y="50" text="Last login:"/>
+				<s:Label x="10" y="70" text="Created at:"/>
+				<s:Label id="nameLabel" x="82" y="10" width="206" text="name"/>
+				<s:Label id="emailLabel" x="82" y="30" width="206" text="email"/>
+				<s:Label id="loginLabel" x="82" y="50" width="206" text="login"/>
+				<s:Label id="createLabel" x="82" y="70" width="206" text="create"/>
 			</s:Panel>
 		</s:NavigatorContent>
-		<s:NavigatorContent width="100%" height="100%" label="Places">
+		<s:NavigatorContent width="100%" height="100%" label="Places" id="placesTab" enabled="false">
 			<s:Button x="10" y="10" label="Search Places" click="button2_clickHandler(event)"/>
 		</s:NavigatorContent>
-		<s:NavigatorContent width="100%" height="100%" label="Photo Collections">
+		<s:NavigatorContent width="100%" height="100%" label="Photo Collections" id="photoTab" enabled="false">
 			<mx:VBox id="box" x="10" width="704" height="310" maxWidth="600" maxHeight="300"
 					 horizontalAlign="center" verticalGap="0">
 				<containers:CoverFlowContainer id="coverflow" width="100%" height="100%" 
@@ -311,7 +366,7 @@
 				<s:Button x="217" y="40" label="Create" click="createCollection()"/>
 			</s:Panel>
 		</s:NavigatorContent>
-		<s:NavigatorContent width="100%" height="100%" label="Key-values">
+		<s:NavigatorContent width="100%" height="100%" label="Key-values" id="keyvalueTab" enabled="false">
 			<s:DataGrid id="keyvalueGrid" x="9" y="237" width="704" height="179"
 						creationComplete="refreshDataGrid()" dataProvider="{keyvalueGridData}">
 				<s:columns>
