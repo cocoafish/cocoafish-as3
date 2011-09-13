@@ -9,7 +9,7 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			import com.cocoafish.api.unit.TestSDKHelper;
+			import com.cocoafish.sdk.unit.TestSDKHelper;
 			
 			import flexunit.framework.TestSuite;
 			

@@ -12,7 +12,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.serialization.json.JSON;
-			import com.cocoafish.api.Cocoafish;
+			import com.cocoafish.sdk.Cocoafish;
 			
 			import mx.containers.TitleWindow;
 			import mx.controls.Alert;
@@ -374,7 +374,7 @@
 						<s:GridColumn width="200" dataField="keyField" headerText="Key"></s:GridColumn>
 						<s:GridColumn width="400" dataField="valueField" headerText="Value"></s:GridColumn>
 						<s:GridColumn dataField="opr" headerText=" "
-									  itemRenderer="com.cocoafish.api.test.components.keyvalues"
+									  itemRenderer="com.cocoafish.sdk.test.components.keyvalues"
 									  resizable="false" sortable="false"></s:GridColumn>
 					</s:ArrayList>
 				</s:columns>

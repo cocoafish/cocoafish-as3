@@ -1,6 +1,6 @@
-package com.cocoafish.api.test.scripts
+package com.cocoafish.sdk.test.scripts
 {
-	import com.cocoafish.api.Cocoafish;
+	import com.cocoafish.sdk.Cocoafish;
 
 	public class SDKHelper
 	{

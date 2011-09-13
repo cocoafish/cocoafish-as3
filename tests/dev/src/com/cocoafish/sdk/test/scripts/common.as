@@ -1,5 +1,5 @@
-import com.cocoafish.api.Cocoafish;
-import com.cocoafish.api.test.scripts.SDKHelper;
+import com.cocoafish.sdk.Cocoafish;
+import com.cocoafish.sdk.test.scripts.SDKHelper;
 
 public var sdk:Cocoafish = null;
 

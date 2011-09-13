@@ -1,4 +1,4 @@
-package com.cocoafish.api {
+package com.cocoafish.sdk {
 	import com.adobe.serialization.json.JSON;
 	import com.cocoafish.constants.Constants;
 	

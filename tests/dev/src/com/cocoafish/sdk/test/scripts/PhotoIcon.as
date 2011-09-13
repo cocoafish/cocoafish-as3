@@ -1,4 +1,4 @@
-package com.cocoafish.api.test.scripts
+package com.cocoafish.sdk.test.scripts
 {
 	import mx.controls.Image;
 	import mx.core.IFactory;

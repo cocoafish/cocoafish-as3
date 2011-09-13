@@ -6,7 +6,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.cocoafish.api.test.scripts.KeyValueEvent;
+			import com.cocoafish.sdk.test.scripts.KeyValueEvent;
 			override public function prepare(hasBeenRecycled:Boolean):void {
 				
 			}

@@ -1,6 +1,6 @@
-package com.cocoafish.api.test.scripts
+package com.cocoafish.sdk.test.scripts
 {
-	import com.cocoafish.api.Cocoafish;
+	import com.cocoafish.sdk.Cocoafish;
 	
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -54,18 +54,18 @@ package com.cocoafish.api.test.scripts
 				deleteButton.visible = false;
 			});
 			
-			uploadButton.source = "com/cocoafish/api/test/images/upload.gif";
+			uploadButton.source = "com/cocoafish/sdk/test/images/upload.gif";
 			uploadButton.useHandCursor = true;
 			uploadButton.buttonMode = true;
 			uploadButton.addEventListener(MouseEvent.CLICK, uploadCallback);
 			
-			deleteButton.source = "com/cocoafish/api/test/images/delete.gif";
+			deleteButton.source = "com/cocoafish/sdk/test/images/delete.gif";
 			deleteButton.useHandCursor = true;
 			deleteButton.buttonMode = true;
 			deleteButton.visible = false;
 			deleteButton.addEventListener(MouseEvent.CLICK, deleteCallback);
 			
-			switchButton.source = "com/cocoafish/api/test/images/switch.png";
+			switchButton.source = "com/cocoafish/sdk/test/images/switch.png";
 			switchButton.useHandCursor = true;
 			switchButton.buttonMode = true;
 			switchButton.addEventListener(MouseEvent.CLICK, function():void{
@@ -219,7 +219,7 @@ package com.cocoafish.api.test.scripts
 			var hbox:HBox = new HBox();
 			
 			var prevButton:Image = new Image();
-			prevButton.source = "com/cocoafish/api/test/images/prev.png";
+			prevButton.source = "com/cocoafish/sdk/test/images/prev.png";
 			prevButton.useHandCursor = true;
 			prevButton.buttonMode = true;
 			prevButton.width = 20;
@@ -244,7 +244,7 @@ package com.cocoafish.api.test.scripts
 			});
 			
 			var nextButton:Image = new Image();
-			nextButton.source = "com/cocoafish/api/test/images/next.png";
+			nextButton.source = "com/cocoafish/sdk/test/images/next.png";
 			nextButton.useHandCursor = true;
 			nextButton.buttonMode = true;
 			nextButton.width = 20;

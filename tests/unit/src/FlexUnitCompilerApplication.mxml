@@ -8,9 +8,9 @@ Please click on the "Refresh" icon in "FlexUnit Results" view to regenerate this
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
 	<fx:Script>
 		<![CDATA[
-			import com.cocoafish.api.unit.TestSDKHelper;
+			import com.cocoafish.sdk.unit.TestSDKHelper;
 			
-			private var com_cocoafish_api_unit_TestSDKHelper_obj:com.cocoafish.api.unit.TestSDKHelper;
+			private var com_cocoafish_api_unit_TestSDKHelper_obj:com.cocoafish.sdk.unit.TestSDKHelper;
 		]]>
 	</fx:Script>
 	<fx:Declarations>

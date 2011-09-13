@@ -1,4 +1,4 @@
-package com.cocoafish.api.unit {
+package com.cocoafish.sdk.unit {
 	import com.cocoafish.utils.SDKHelper;
 	
 	import flexunit.framework.TestCase;

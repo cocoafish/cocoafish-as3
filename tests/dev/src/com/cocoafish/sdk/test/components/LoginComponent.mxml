@@ -6,8 +6,8 @@
 	<fx:Script>
 		<![CDATA[
 			import com.cocoafish.api.Cocoafish;
-			import com.cocoafish.api.test.scripts.SessionHelper;
-			import com.cocoafish.api.test.scripts.SDKHelper;
+			import com.cocoafish.sdk.test.scripts.SessionHelper;
+			import com.cocoafish.sdk.test.scripts.SDKHelper;
 			
 			import mx.managers.PopUpManager;
 			protected function loginUser(event:MouseEvent):void

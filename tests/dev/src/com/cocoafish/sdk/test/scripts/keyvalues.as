@@ -1,5 +1,5 @@
-import com.cocoafish.api.Cocoafish;
-import com.cocoafish.api.test.scripts.KeyValueEvent;
+import com.cocoafish.sdk.Cocoafish;
+import com.cocoafish.sdk.test.scripts.KeyValueEvent;
 
 import flash.events.Event;
 import flash.net.URLRequestMethod;

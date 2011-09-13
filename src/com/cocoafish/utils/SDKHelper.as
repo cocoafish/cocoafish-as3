@@ -1,5 +1,5 @@
 package com.cocoafish.utils {
-	import com.cocoafish.api.Cocoafish;
+	import com.cocoafish.sdk.Cocoafish;
 
 	public class SDKHelper {
 		private static var helper:SDKHelper = new SDKHelper();

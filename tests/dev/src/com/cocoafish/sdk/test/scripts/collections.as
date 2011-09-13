@@ -1,6 +1,6 @@
-import com.cocoafish.api.Cocoafish;
-import com.cocoafish.api.test.scripts.CollectionPanel;
-import com.cocoafish.api.test.scripts.SessionHelper;
+import com.cocoafish.sdk.Cocoafish;
+import com.cocoafish.sdk.test.scripts.CollectionPanel;
+import com.cocoafish.sdk.test.scripts.SessionHelper;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
