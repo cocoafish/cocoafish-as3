@@ -5,10 +5,21 @@
 			   width="100%" minWidth="955" minHeight="600" 
 			   applicationComplete="updateForm()" 
 			   xmlns:containers="com.dougmccune.containers.*"
-			   xmlns:components="com.cocoafish.api.test.components.*">
+			   xmlns:components="com.cocoafish.api.test.components.*" 
+			   xmlns:maps="com.google.maps.*">
+	<fx:Declarations>
+		<s:RadioButtonGroup id="radiogroup1"/>
+		<mx:Validator id="appKeyV" source="{appKeyTextField}" property="text"  requiredFieldError="App. key is required"/>
+		<mx:Validator id="oauthKeyV" source="{oauthKeyTextField}" property="text"  requiredFieldError="OAuth key is required"/>
+		<mx:Validator id="oauthSecV" source="{oauthSecretTextField}" property="text"  requiredFieldError="OAuth secret is required"/>
+		<!--<components:LoginComponent visible="false" horizontalCenter="-343" verticalCenter="-115"/>-->
+		
+	</fx:Declarations>
+	
 	<fx:Script source="scripts/collections.as"/>
 	<fx:Script source="scripts/common.as"/>
 	<fx:Script source="scripts/keyvalues.as"/>
+	<fx:Script source="scripts/places.as"/>
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.serialization.json.JSON;
@@ -18,6 +29,9 @@
 			import mx.controls.Alert;
 			import mx.controls.ProgressBar;
 			import mx.managers.PopUpManager;
+			
+			import com.google.maps.LatLng;
+			import com.google.maps.MapType;
 			
 			private var photo:FileReference;
 			private var isPhotoLoaded:Boolean = false;
@@ -199,20 +213,6 @@
 				SDKHelper.getInstance().resetSDK();
 			}
 			
-			protected function button2_clickHandler(event:MouseEvent):void
-			{
-				var sdk:Cocoafish = getSDK();
-				var param:Object = new Object();
-				param.per_page = "20";
-				sdk.sendRequest("places/search.json", URLRequestMethod.GET, param, false, function(data:Object):void {
-					hideLoading();
-					var result:String = JSON.encode(data);
-					trace(result);
-					Alert.show(result);
-				});
-				showLoading();
-			}
-			
 			protected function button3_clickHandler(event:MouseEvent):void
 			{
 				var sdk:Cocoafish = getSDK();
@@ -291,13 +291,6 @@
 		]]>
 	</fx:Script>
 	
-	<fx:Declarations>
-		<s:RadioButtonGroup id="radiogroup1"/>
-		<mx:Validator id="appKeyV" source="{appKeyTextField}" property="text"  requiredFieldError="App. key is required"/>
-		<mx:Validator id="oauthKeyV" source="{oauthKeyTextField}" property="text"  requiredFieldError="OAuth key is required"/>
-		<mx:Validator id="oauthSecV" source="{oauthSecretTextField}" property="text"  requiredFieldError="OAuth secret is required"/>
-		<!--<components:LoginComponent visible="false" horizontalCenter="-343" verticalCenter="-115"/>-->
-	</fx:Declarations>
 	<mx:TabNavigator x="11" y="126" width="726" height="459">
 		<s:NavigatorContent width="100%" height="100%" label="Users">
 			<s:Panel id="createPanel" x="9" y="160" width="394" height="255"
@@ -326,9 +319,9 @@
 				<s:Button x="311" y="60" label="Login" click="button3_clickHandler(event)"/>
 				<s:Label x="10" y="10" text="Login:"/>
 				<s:Label x="10" y="40" text="Password:"/>
-				<s:TextInput id="loginTextField" x="94" y="4" width="287"/>
+				<s:TextInput id="loginTextField" x="94" y="4" width="287" text="bill@cocoafish.com"/>
 				<s:TextInput id="loginPasswdTextField" x="94" y="34" width="287"
-							 displayAsPassword="true"/>
+							 displayAsPassword="true" text="111111"/>
 			</s:Panel>
 			<s:Panel id="welcomePanel" x="11" y="10" width="391" height="164" title="Welcome!" visible="false">
 				<s:Button x="289" y="90" width="89" height="26" label="Logout"
@@ -344,7 +337,10 @@
 			</s:Panel>
 		</s:NavigatorContent>
 		<s:NavigatorContent width="100%" height="100%" label="Places" id="placesTab" enabled="false">
-			<s:Button x="10" y="10" label="Search Places" click="button2_clickHandler(event)"/>
+			<mx:HBox x="10" y="0" width="704" height="416" borderVisible="true"
+					 dropShadowVisible="true">
+				<maps:Map id="map" mapevent_mappreinitialize="onMapPreinitialize(event)" mapevent_mapready="onMapReady(event)" width="100%" height="100%" sensor="true" key="ABQIAAAA4_yxEyBGCBN2nqvjUQVL9hT2yXp_ZAY8_ufC3CFXhHIE1NvwkxR3jxKzpl1NpDMUJDTf4Q1RVtDCkg"/>
+			</mx:HBox>
 		</s:NavigatorContent>
 		<s:NavigatorContent width="100%" height="100%" label="Photo Collections" id="photoTab" enabled="false">
 			<mx:VBox id="box" x="10" width="704" height="310" maxWidth="600" maxHeight="300"
@@ -396,11 +392,12 @@
 		<s:RadioButton id="oauth" label="OAuth" click="oauth_clickHandler(event)" enabled="true"
 					   groupName="radiogroup1" selected="true"/>
 	</s:VGroup>
-	<s:TextInput id="appKeyTextField" x="99" y="37" width="514" prompt="&lt;app key&gt;"/>
+	<s:TextInput id="appKeyTextField" x="99" y="37" width="514" prompt="&lt;app key&gt;"
+				 text="fNEQf2q7T4pQIuJTT4aRvoaHFhuiVP77"/>
 	<s:TextInput id="oauthKeyTextField" x="145" y="62" width="468" enabled="false"
-				 prompt="&lt;oauth key&gt;"/>
+				 prompt="&lt;oauth key&gt;" text="2dnrrXXeypfyLDHFbOw550BTpHEx8sED"/>
 	<s:TextInput id="oauthSecretTextField" x="146" y="87" width="467" enabled="false"
-				 prompt="&lt;oauth secret&gt;"/>
+				 prompt="&lt;oauth secret&gt;" text="SnUpTiNiqQHujRY98K5rfTuo6CpsMjFC"/>
 	<s:Label x="99" y="93" text="Secret:"/>
 	<s:Label x="99" y="67" text="Key:"/>
 </s:Application>

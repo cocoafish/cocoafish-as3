@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="372" height="248" title="Check in">
+	<fx:Script>
+		<![CDATA[
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Label id="placeName" x="10" y="10" fontSize="17" fontWeight="bold" text="Place"/>
+	<s:Label id="address" x="10" y="34" text="address"/>
+	<s:Label x="10" y="54" fontWeight="bold" text="Review:"/>
+	<s:TextArea id="review" x="10" y="74" width="350" height="102"
+				prompt="(Write something about here)"/>
+	<s:Button id="checkinButton" x="148" y="184" label="Check in!" fontWeight="bold"/>
+	<s:Image x="304" y="6" width="56" height="56" smooth="true" smoothingQuality="high"
+			 source="com/cocoafish/sdk/test/images/maps.png"/>
+</s:TitleWindow>

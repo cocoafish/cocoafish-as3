@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="32" height="32" creationComplete="init()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import org.bytearray.gif.player.GIFPlayer;
+			
+			var player:GIFPlayer = new GIFPlayer(true);
+			public function init():void { 
+				var request:URLRequest = new URLRequest("com/cocoafish/sdk/test/images/loader.gif"); 
+				player.load(request); 
+				player.visible = true; 
+				img.addChild(player);
+			} 
+		]]>
+	</fx:Script>
+	<mx:Image id="img" width="32" height="32"/>
+	
+</s:Group>
