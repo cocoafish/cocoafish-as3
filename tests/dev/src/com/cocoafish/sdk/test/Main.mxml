@@ -24,14 +24,15 @@
 		<![CDATA[
 			import com.adobe.serialization.json.JSON;
 			import com.cocoafish.sdk.Cocoafish;
+			import com.google.maps.LatLng;
+			import com.google.maps.MapType;
 			
 			import mx.containers.TitleWindow;
 			import mx.controls.Alert;
 			import mx.controls.ProgressBar;
 			import mx.managers.PopUpManager;
 			
-			import com.google.maps.LatLng;
-			import com.google.maps.MapType;
+			import spark.events.TextOperationEvent;
 			
 			private var photo:FileReference;
 			private var isPhotoLoaded:Boolean = false;
@@ -288,6 +289,7 @@
 				oauthKeyTextField.enabled = isEnable;
 				oauthSecretTextField.enabled = isEnable;
 			}
+			
 		]]>
 	</fx:Script>
 	
@@ -337,10 +339,11 @@
 			</s:Panel>
 		</s:NavigatorContent>
 		<s:NavigatorContent width="100%" height="100%" label="Places" id="placesTab" enabled="false">
-			<mx:HBox x="10" y="0" width="704" height="416" borderVisible="true"
-					 dropShadowVisible="true">
+			<mx:HBox x="10" y="0" width="704" height="416" borderVisible="true" dropShadowVisible="true">
 				<maps:Map id="map" mapevent_mappreinitialize="onMapPreinitialize(event)" mapevent_mapready="onMapReady(event)" width="100%" height="100%" sensor="true" key="ABQIAAAA4_yxEyBGCBN2nqvjUQVL9hT2yXp_ZAY8_ufC3CFXhHIE1NvwkxR3jxKzpl1NpDMUJDTf4Q1RVtDCkg"/>
 			</mx:HBox>
+			<s:Image id="addPlaceIcon" visible="false" x="651" y="5" width="63" height="50" toolTip="Add place..." smooth="true"
+					 smoothingQuality="high" source="com/cocoafish/sdk/test/images/addplace.png" buttonMode="true" click="addMarker(event)"/>
 		</s:NavigatorContent>
 		<s:NavigatorContent width="100%" height="100%" label="Photo Collections" id="photoTab" enabled="false">
 			<mx:VBox id="box" x="10" width="704" height="310" maxWidth="600" maxHeight="300"

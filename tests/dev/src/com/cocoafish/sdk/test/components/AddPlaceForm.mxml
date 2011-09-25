@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="274" height="380" title="Add New Place">
+	<fx:Script>
+		<![CDATA[
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Group id="formArea" width="100%" height="100%" visible="false">
+		<s:Label x="10" y="12" fontSize="12" fontWeight="bold" text="Name:"/>
+		<s:Label x="10" y="41" fontWeight="bold" text="Address:"/>
+		<s:Label x="10" y="71" fontWeight="bold" text="City:"/>
+		<s:Button id="addPlaceButton" x="95" y="316" label="Add" fontWeight="bold"/>
+		<s:TextInput id="placeName" x="80" y="4" width="181"/>
+		<s:TextInput id="address" x="80" y="34" width="181"/>
+		<s:Button x="173" y="316" label="Remove Pin" fontWeight="bold" id="removePinButton"/>
+		<s:TextInput id="city" x="80" y="64" width="182"/>
+		<s:Label x="9" y="101" fontWeight="bold" text="State:"/>
+		<s:TextInput id="state" x="80" y="95" width="182"/>
+		<s:Label x="10" y="156" fontWeight="bold" text="Country:"/>
+		<s:TextInput id="country" x="80" y="151" width="182"/>
+		<s:Label x="10" y="187" fontWeight="bold" text="Latitude:"/>
+		<s:TextInput id="lat" x="80" y="181" width="182"/>
+		<s:Label x="10" y="217" fontWeight="bold" text="Longitude:"/>
+		<s:TextInput id="lng" x="80" y="211" width="182"/>
+		<s:Label x="10" y="246" fontWeight="bold" text="Phone:"/>
+		<s:TextInput id="phone" x="80" y="241" width="182"/>
+		<s:Label x="10" y="276" fontWeight="bold" text="Website:"/>
+		<s:TextInput id="website" x="80" y="271" width="182"/>
+		<s:Label x="10" y="129" fontWeight="bold" text="Postal:"/>
+		<s:TextInput id="postal" x="80" y="123" width="182"/>
+	</s:Group>
+</s:TitleWindow>
