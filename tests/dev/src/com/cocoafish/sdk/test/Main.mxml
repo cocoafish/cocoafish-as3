@@ -321,9 +321,9 @@
 				<s:Button x="311" y="60" label="Login" click="button3_clickHandler(event)"/>
 				<s:Label x="10" y="10" text="Login:"/>
 				<s:Label x="10" y="40" text="Password:"/>
-				<s:TextInput id="loginTextField" x="94" y="4" width="287" text="bill@cocoafish.com"/>
+				<s:TextInput id="loginTextField" x="94" y="4" width="287"/>
 				<s:TextInput id="loginPasswdTextField" x="94" y="34" width="287"
-							 displayAsPassword="true" text="111111"/>
+							 displayAsPassword="true"/>
 			</s:Panel>
 			<s:Panel id="welcomePanel" x="11" y="10" width="391" height="164" title="Welcome!" visible="false">
 				<s:Button x="289" y="90" width="89" height="26" label="Logout"
@@ -396,11 +396,11 @@
 					   groupName="radiogroup1" selected="true"/>
 	</s:VGroup>
 	<s:TextInput id="appKeyTextField" x="99" y="37" width="514" prompt="&lt;app key&gt;"
-				 text="fNEQf2q7T4pQIuJTT4aRvoaHFhuiVP77"/>
+				 text="fNEQf2q7T4pQIuJUU4aRvoaHFhuiVP77"/>
 	<s:TextInput id="oauthKeyTextField" x="145" y="62" width="468" enabled="false"
-				 prompt="&lt;oauth key&gt;" text="2dnrrXXeypfyLDHFbOw550BTpHEx8sED"/>
+				 prompt="&lt;oauth key&gt;" text="2dnrrXXeypfyLUJFbOw550BTpHEx8sED"/>
 	<s:TextInput id="oauthSecretTextField" x="146" y="87" width="467" enabled="false"
-				 prompt="&lt;oauth secret&gt;" text="SnUpTiNiqQHujRY98K5rfTuo6CpsMjFC"/>
+				 prompt="&lt;oauth secret&gt;" text="SnUpTiNiqQHujIK98K5rfTuo6CpsMjFC"/>
 	<s:Label x="99" y="93" text="Secret:"/>
 	<s:Label x="99" y="67" text="Key:"/>
 </s:Application>
