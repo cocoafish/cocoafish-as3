@@ -36,7 +36,7 @@ package com.cocoafish.sdk {
 			}
 		}
 		
-		public function sendRequest(url:String, method:String, data:Object, useSecure:Boolean, callback:Function):void {
+		public function sendRequest(url:String, method:String, data:Object, useSecure:Boolean, callback:Function):CCRequest {
 			var baseURL:String = Constants.BASE_URL;
 			if(useSecure) {
 				baseURL = Constants.BASE_URL_SECURE;
@@ -139,6 +139,7 @@ package com.cocoafish.sdk {
 				registerProgressListeners(photoRef);
 				
 				photoRef.upload(request, attrName);
+				return new CCRequest(photoRef);
 			} else {
 				var loader:URLLoader = new URLLoader();
 				request.method = httpMethod;
@@ -166,6 +167,7 @@ package com.cocoafish.sdk {
 				
 				//send request
 				loader.load(request);
+				return new CCRequest(loader);
 			}
 		}
 		
