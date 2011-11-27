@@ -27,19 +27,27 @@ package com.cocoafish.sdk {
 		var sessionId:String = null;
 		var consumer:OAuthConsumer = null;
 		var listeners:ArrayList = null;
+		var apiBaseURL:String = null;
 		
-		public function Cocoafish(key:String, oauthSecret:String = "") {
+		public function Cocoafish(key:String, oauthSecret:String = "", baseURL:String = null) {
 			if(oauthSecret == "") {
 				this.appKey = key;
 			} else {
 				consumer = new OAuthConsumer(key, oauthSecret);
 			}
+			if(baseURL) {
+				apiBaseURL = baseURL;
+			} else {
+				apiBaseURL = Constants.API_BASE_URL;
+			}
 		}
 		
 		public function sendRequest(url:String, method:String, data:Object, useSecure:Boolean, callback:Function):void {
-			var baseURL:String = Constants.BASE_URL;
+			var baseURL:String = null;
 			if(useSecure) {
-				baseURL = Constants.BASE_URL_SECURE;
+				baseURL = Constants.API_SECURE + apiBaseURL + "/" + Constants.API_VERSION + "/";
+			} else {
+				baseURL = Constants.API_NON_SECURE + apiBaseURL + "/" + Constants.API_VERSION + "/";
 			}
 			
 			var reqURL:String = null;

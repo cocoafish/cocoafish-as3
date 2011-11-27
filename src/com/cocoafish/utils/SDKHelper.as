@@ -7,6 +7,7 @@ package com.cocoafish.utils {
 		private var appKey:String = null;
 		private var oauthKey:String = null;
 		private var oauthSecret:String = null;
+		private var baseURL:String = null;
 		private var sdk:Cocoafish = null;
 		
 		private var isInitialized:Boolean = false;
@@ -20,7 +21,7 @@ package com.cocoafish.utils {
 			return helper;
 		}
 		
-		public function initializeSDK(key:String, oauthSecret:String = null):void {
+		public function initializeSDK(key:String, oauthSecret:String = null, baseURL:String = null):void {
 			if(isInitialized) {
 				throw new Error("The sdk has been already initialized.");
 			}
@@ -37,6 +38,7 @@ package com.cocoafish.utils {
 				this.oauthKey = key;
 				this.oauthSecret = oauthSecret;
 			}
+			this.baseURL = baseURL;
 			isInitialized = true;
 		}
 		
@@ -47,9 +49,9 @@ package com.cocoafish.utils {
 			
 			if(sdk == null) {
 				if(oauthSecret == null) {
-					sdk = new Cocoafish(appKey);
+					sdk = new Cocoafish(appKey, null, baseURL);
 				} else {
-					sdk = new Cocoafish(oauthKey, oauthSecret);
+					sdk = new Cocoafish(oauthKey, oauthSecret, baseURL);
 				}
 			}
 			return sdk;
@@ -60,6 +62,7 @@ package com.cocoafish.utils {
 			oauthKey = null;
 			oauthSecret = null;
 			appKey = null;
+			baseURL = null;
 			isInitialized = false;
 		}
 	}
