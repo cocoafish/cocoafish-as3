@@ -42,7 +42,7 @@ package com.cocoafish.sdk {
 			}
 		}
 		
-		public function sendRequest(url:String, method:String, data:Object, useSecure:Boolean, callback:Function):CCRequest {
+		public function sendRequest(url:String, method:String, data:Object, callback:Function, useSecure:Boolean = true):CCRequest {
 			var baseURL:String = null;
 			if(useSecure) {
 				baseURL = Constants.API_SECURE + apiBaseURL + "/" + Constants.API_VERSION + "/";
