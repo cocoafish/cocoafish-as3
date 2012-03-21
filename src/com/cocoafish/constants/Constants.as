@@ -24,6 +24,7 @@ package com.cocoafish.constants {
 		
 		//Others
 		public static var PARAMETER_DELIMITER:String = "&";
+		public static var PARAMETER_QUESTION:String = "?";
 		public static var PARAMETER_EQUAL:String = "=";
 	}
 }

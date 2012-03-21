@@ -42,9 +42,21 @@ package com.cocoafish.sdk {
 			}
 		}
 		
-		public function sendRequest(url:String, method:String, data:Object, callback:Function, useSecure:Boolean = true):CCRequest {
+		public function sendRequest(url:String, method:String, data:Object, callback:Object, useSecure:Object = null):CCRequest {
+			var isSecure:Boolean = true;
+			var callbackFunc:Function = null;
+			
+			if(callback is Boolean) {
+				isSecure = callback as Boolean;
+				callbackFunc = useSecure as Function;
+			} else {
+				callbackFunc = callback as Function;
+				if(useSecure != null)
+					isSecure = useSecure as Boolean;
+			}
+			
 			var baseURL:String = null;
-			if(useSecure) {
+			if(isSecure) {
 				baseURL = Constants.API_SECURE + apiBaseURL + "/" + Constants.API_VERSION + "/";
 			} else {
 				baseURL = Constants.API_NON_SECURE + apiBaseURL + "/" + Constants.API_VERSION + "/";
@@ -101,6 +113,9 @@ package com.cocoafish.sdk {
 				if(photoRef != null) {
 					request = this.buildOAuthRequest(reqURL, httpMethod, null);
 				} else {
+					if(this.sessionId != null) {
+						data[Constants.SESSION_ID] = this.sessionId;
+					}
 					request = this.buildOAuthRequest(reqURL, httpMethod, data);
 				}
 			} else {
@@ -135,12 +150,12 @@ package com.cocoafish.sdk {
 				
 				//Request complete
 				photoRef.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, function(event:DataEvent):void{
-					completeCallback(event.data, callback);
+					completeCallback(event.data, callbackFunc);
 				});
 				
 				//IO Error
 				photoRef.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void {
-					errorCallback(event, callback);
+					errorCallback(event, callbackFunc);
 				});
 				
 				//Register upload progress listeners
@@ -152,6 +167,8 @@ package com.cocoafish.sdk {
 				var loader:URLLoader = new URLLoader();
 				request.method = httpMethod;
 				if(data != null) {
+					if(data[Constants.SESSION_ID])
+						delete(data[Constants.SESSION_ID]);
 					var params:String = getURLParameters(data);
 					if(params != null && params.length > 0) {
 						if(httpMethod == URLRequestMethod.GET) {
@@ -163,14 +180,25 @@ package com.cocoafish.sdk {
 				}
 				loader.dataFormat = URLLoaderDataFormat.TEXT;
 				
+				//append session id
+				if(this.sessionId != null) {
+					if(request.url.indexOf(Constants.SESSION_ID) == -1) {
+						if(request.url.indexOf(Constants.PARAMETER_QUESTION) != -1) {
+							request.url += Constants.PARAMETER_DELIMITER + Constants.SESSION_ID + Constants.PARAMETER_EQUAL + this.sessionId;
+						} else {
+							request.url += Constants.PARAMETER_QUESTION + Constants.SESSION_ID + Constants.PARAMETER_EQUAL + this.sessionId;
+						}
+					}
+				}
+				
 				//Request complete
 				loader.addEventListener(Event.COMPLETE, function():void{
-					completeCallback(loader.data, callback);
+					completeCallback(loader.data, callbackFunc);
 				});
 				
 				//IO Error
 				loader.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void {
-					errorCallback(event, callback);
+					errorCallback(event, callbackFunc);
 				});
 				
 				//send request
@@ -218,7 +246,7 @@ package com.cocoafish.sdk {
 		
 		private function completeCallback(data:String, callback:Function):void {
 			if(data != null) {
-				var json:Object = JSON.decode(data);
+				var json:Object = com.adobe.serialization.json.JSON.decode(data);
 				var sessionId:String = parseSessionId(json);
 				if(sessionId != null) {
 					setSessionId(sessionId);
@@ -247,8 +275,12 @@ package com.cocoafish.sdk {
 			return null;
 		}
 		
-		private function setSessionId(sessionId:String):void {
+		public function setSessionId(sessionId:String):void {
 			this.sessionId = sessionId;
+		}
+		
+		public function getSessionId():String {
+			return this.sessionId;
 		}
 		
 		/*
