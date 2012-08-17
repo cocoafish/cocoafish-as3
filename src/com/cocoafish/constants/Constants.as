@@ -3,7 +3,7 @@ package com.cocoafish.constants {
 		//URLs
 		public static var API_NON_SECURE:String = "http://";
 		public static var API_SECURE:String = "https://";
-		public static var API_BASE_URL:String = "api.cocoafish.com";
+		public static var API_BASE_URL:String = "api.cloud.appcelerator.com";
 		public static var API_VERSION:String = "v1";
 		public static var KEY:String = "?key=";
 		public static var SESSION_ID:String = "_session_id";
