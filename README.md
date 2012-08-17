@@ -31,7 +31,7 @@ Then send an API request with the `sendRequest` method:
 
 which takes the following parameters:  
 
-* url: the API url without the standard REST API http://api.cocoafish.com/v1/ prefix  
+* url: the API url without the standard REST API https://api.cloud.appcelerator.com/v1/ prefix  
 * method: the http method (accepted values are GET, POST, PUT, DELETE)  
 * data: the parameters to be passed to the API  
 * useSecure: a boolean that indicates whether to use https  
